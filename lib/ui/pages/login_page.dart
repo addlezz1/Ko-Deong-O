@@ -380,14 +380,16 @@ class _LoginPageState extends State<LoginPage>
                                "studentImage", bLogin.studentImage);
                            _sharedPreferences.setString(
                                "schoolGrade", bLogin.schoolGrade);
+                           _sharedPreferences.setString('loginID', loginEmailController.text);
+                           //if (_isChecked == true) {
+                           _sharedPreferences.setString('loginPassword', loginPasswordController.text);
                            //print(bLogin.userName.toString());
                            //print(_sharedPreferences.getString("loginNickName"));
-                           Navigator.push(
+                           Navigator.pushReplacement(
                              context,
                              MaterialPageRoute(builder: (context) =>
                                  HomePage()),
                            );
-                           _saveProfile();
                          } else {
                            _scaffoldKey.currentState.showSnackBar(SnackBar(
                              content: Text("로그인에 실패했습니다. 아이디 또는 비밀번호를 확인해주세요."),
@@ -829,9 +831,7 @@ class _LoginPageState extends State<LoginPage>
     if(this.mounted) {
       //SharedPreferences 에 저장
       setState(() {
-        _sharedPreferences.setString('loginID', loginEmailController.text);
-        //if (_isChecked == true) {
-        _sharedPreferences.setString('loginPassword', loginPasswordController.text);
+
         //}
       });
     }

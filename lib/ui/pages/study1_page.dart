@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gradient_text/gradient_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talkwho/models/learn.dart';
 import 'package:talkwho/models/unit.dart';
@@ -12,18 +14,21 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:talkwho/ui/pages/sen1_page.dart';
 import 'package:talkwho/ui/pages/study2_page.dart';
 import 'package:talkwho/ui/widgets/circular_button.dart';
+import 'package:talkwho/ui/widgets/gradient_icon.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 
 class Study1Page extends StatefulWidget {
   final List<Question> questions;
   final Unit unit;
   final String type;
+  final String textVoca;
 
-  const Study1Page({Key key, @required this.questions, this.unit, @required this.type}) : super(key: key);
+  const Study1Page({Key key, @required this.questions, this.unit, @required this.type, @required this.textVoca}) : super(key: key);
 
   @override
   _Study1State createState() => _Study1State();
@@ -34,6 +39,8 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
   bool selectedEng = false;
   bool selectedKor = false;
   bool selectedSound = false;
+  bool soundClick = true;
+  bool changeSex = true;
 
   List<Learn> learns = List();
 
@@ -57,7 +64,8 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   AudioCache audioCache = AudioCache();
-  AudioPlayer advancedPlayer;
+  AudioPlayer advancedPlayer = AudioPlayer();
+  AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
   AnimationController animationController;
   Animation degOneTranslationAnimation, degTwoTranslationAnimation, degThreeTranslationAnimation;
   Animation rotationAnimation;
@@ -73,8 +81,6 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
     super.initState();
 
     _getLearn();
-
-    advancedPlayer  = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
     if(kIsWeb){
       return;
@@ -142,7 +148,7 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                           //advancedPlayer.play(question.audioUrl);
 
                           return new Padding(
-                            padding: new EdgeInsets.all(10.0),
+                            padding: new EdgeInsets.all(size.width * 0.03),
                             child: new Material(
                               elevation: 8.0,
                               textStyle: new TextStyle(color: Colors.white),
@@ -210,20 +216,29 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                           ),
                                                           child: new AutoSizeText(
                                                             question.eng,
-                                                            style: TextStyle(
+                                                            style: (widget.textVoca == 'text')? TextStyle(
+                                                              fontSize: 20.0,
+                                                              height: 2,
+                                                            ) : TextStyle(
                                                               fontSize: 30.0,
                                                               height: 2,
                                                             ),
                                                             minFontSize: 15.0,
+                                                            maxLines: 4,
                                                           ),
                                                         ) : AutoSizeText(
                                                           question.eng,
-                                                          style: TextStyle(
+                                                          style: (widget.textVoca == 'text')? TextStyle(
+                                                            fontSize: 20.0,
+                                                            color: Colors.black,
+                                                            height: 2,
+                                                          ) : TextStyle(
                                                             fontSize: 30.0,
                                                             color: Colors.black,
                                                             height: 2,
                                                           ),
                                                           minFontSize: 15.0,
+                                                          maxLines: 4,
                                                         ),
                                                       ),
                                                     ),
@@ -260,20 +275,29 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                           ),
                                                           child: new AutoSizeText(
                                                             question.kor,
-                                                            style: TextStyle(
+                                                            style: (widget.textVoca == 'text')? TextStyle(
+                                                              fontSize: 20.0,
+                                                              height: 2,
+                                                            ) : TextStyle(
                                                               fontSize: 30.0,
                                                               height: 2,
                                                             ),
                                                             minFontSize: 15.0,
+                                                            maxLines: 4,
                                                           ),
                                                         ) : AutoSizeText(
                                                           question.kor,
-                                                          style: TextStyle(
+                                                          style: (widget.textVoca == 'text')? TextStyle(
+                                                            fontSize: 20.0,
+                                                            color: Colors.black,
+                                                            height: 2,
+                                                          ) : TextStyle(
                                                             fontSize: 30.0,
                                                             color: Colors.black,
                                                             height: 2,
                                                           ),
                                                           minFontSize: 15.0,
+                                                          maxLines: 4,
                                                         ),
                                                       ),
                                                     ),
@@ -292,88 +316,197 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                     top: size.height * 0.1,
                                   ),
                                   Positioned(
-                                    left: size.width * 0.28,
-                                    top: size.height * 0.64,
-                                    child: Row(
-                                      children: <Widget>[
-                                        new ParallaxContainer(
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 10.0),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  GestureDetector(
-                                                    child: (type == 'eng') ? IconButton(
-                                                      icon: Icon(
-                                                        Icons.done,
-                                                        size: size.width * 0.08,
+                                    right: size.width * 0.05,
+                                    bottom: size.height * 0.03,
+                                    child: Material(
+                                      elevation: 3,
+                                      borderRadius: new BorderRadius.circular(size.width * 0.05),
+                                      child: Row (
+                                        children: <Widget>[
+                                          new ParallaxContainer(
+                                            child: Center(
+                                              child: Padding(
+                                                padding: EdgeInsets.only(top: size.width * 0.03),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    GestureDetector(
+                                                      child: (type == 'eng') ? IconButton(
+                                                        icon: GradientIcon(
+                                                          icon: FontAwesomeIcons.checkCircle,
+                                                          size: size.width * 0.075,
+                                                          gradient: new LinearGradient(
+                                                            colors: [
+                                                              Colors.blueAccent,
+                                                              Colors.lightBlueAccent
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            selectedEng = !selectedEng;
+                                                          });
+                                                        },
+                                                        color: Color(0xff616161),
+                                                      ) : (type == 'kor') ? IconButton(
+                                                        icon: GradientIcon(
+                                                          icon: FontAwesomeIcons.checkCircle,
+                                                          size: size.width * 0.075,
+                                                          gradient: new LinearGradient(
+                                                            colors: [
+                                                              Colors.blueAccent,
+                                                              Colors.lightBlueAccent
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            selectedKor = !selectedKor;
+                                                          });
+                                                        },
+                                                        color: Color(0xff616161),
+                                                      ) : IconButton(
+                                                        icon: GradientIcon(
+                                                          icon: FontAwesomeIcons.checkCircle,
+                                                          size: size.width * 0.075,
+                                                          gradient: new LinearGradient(
+                                                            colors: [
+                                                              Colors.blueAccent,
+                                                              Colors.lightBlueAccent
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            selectedEng = !selectedEng;
+                                                            selectedKor = !selectedKor;
+                                                          });
+                                                        },
+                                                        color: Color(0xff616161),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            position: info.position,
+                                            translationFactor: 300.0,
+                                          ),
+                                          /*MaterialButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              changeSex = !changeSex;
+                                            });
+                                          },
+                                          elevation: 0.0,
+                                          child: (changeSex == true)? AnimatedOpacity(
+                                            opacity: (changeSex == true)? 1.0 : 0.0,
+                                            child: GradientText("M",
+                                                gradient: LinearGradient(
+                                                    colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                                                style: TextStyle(fontSize: size.width * 0.065, fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.center
+                                            ),
+                                            duration: Duration(milliseconds: 2200),
+                                          ) : AnimatedOpacity(
+                                            opacity: (changeSex == false)? 1.0 : 0.0,
+                                            child: GradientText("W",
+                                                gradient: LinearGradient(
+                                                    colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                                                style: TextStyle(fontSize: size.width * 0.065, fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.center
+                                            ),
+                                            duration: Duration(milliseconds: 2200),
+                                          ),
+                                          shape: CircleBorder(),
+                                          highlightColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                        ),*/
+                                          new Container(
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(top: 10.0),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    (soundClick == true) ? IconButton(
+                                                      icon: GradientIcon(
+                                                        icon: FontAwesomeIcons.playCircle,
+                                                        size: size.width * 0.075,
+                                                        gradient: new LinearGradient(
+                                                          colors: [
+                                                            Colors.blueAccent,
+                                                            Colors.lightBlueAccent
+                                                          ],
+                                                        ),
                                                       ),
                                                       onPressed: () {
+                                                        (changeSex == true)? advancedPlayer.play(question.audioUrl) : advancedPlayer.play(question.mediaUrl);
+                                                        //await assetsAudioPlayer.open(Audio.network("\"" + question.audioUrl + "\""));
                                                         setState(() {
-                                                          selectedEng = !selectedEng;
+                                                          soundClick = !soundClick;
                                                         });
                                                       },
-                                                      color: Color(0xff616161),
-                                                    ) : (type == 'kor') ? IconButton(
-                                                      icon: Icon(
-                                                        Icons.done,
-                                                        size: size.width * 0.08,
-                                                      ),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          selectedKor = !selectedKor;
-                                                        });
-                                                      },
-                                                      color: Color(0xff616161),
+                                                      splashColor: Colors.transparent,
+                                                      highlightColor: Colors.transparent,
                                                     ) : IconButton(
-                                                      icon: Icon(
-                                                        Icons.done,
-                                                        size: size.width * 0.08,
+                                                      icon: GradientIcon(
+                                                        icon: FontAwesomeIcons.pauseCircle,
+                                                        size: size.width * 0.075,
+                                                        gradient: new LinearGradient(
+                                                          colors: [
+                                                            Colors.blueAccent,
+                                                            Colors.lightBlueAccent
+                                                          ],
+                                                        ),
                                                       ),
                                                       onPressed: () {
+                                                        advancedPlayer.pause();
+                                                        //await assetsAudioPlayer.open(Audio.network("\"" + question.audioUrl + "\""));
                                                         setState(() {
-                                                          selectedEng = !selectedEng;
-                                                          selectedKor = !selectedKor;
+                                                          soundClick = !soundClick;
                                                         });
                                                       },
-                                                      color: Color(0xff616161),
+                                                      splashColor: Colors.transparent,
+                                                      highlightColor: Colors.transparent,
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                          position: info.position,
-                                          translationFactor: 300.0,
-                                        ),
-                                        SizedBox(
-                                          width: size.width * 0.15,
-                                        ),
-                                        new ParallaxContainer(
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 10.0),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.volume_up,
-                                                      size: 30.0,
+                                          new Container(
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(top: 10.0),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    IconButton(
+                                                      icon: GradientIcon(
+                                                        icon: FontAwesomeIcons.stopCircle,
+                                                        size: size.width * 0.075,
+                                                        gradient: new LinearGradient(
+                                                          colors: [
+                                                            Colors.blueAccent,
+                                                            Colors.lightBlueAccent
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        advancedPlayer.stop();
+                                                        //await assetsAudioPlayer.open(Audio.network("\"" + question.audioUrl + "\""));
+                                                        setState(() {
+                                                          soundClick = true;
+                                                        });
+                                                      },
+                                                      splashColor: Colors.transparent,
+                                                      highlightColor: Colors.transparent,
                                                     ),
-                                                    onPressed: () async {
-                                                      print(question.audioUrl);
-                                                      advancedPlayer.play(question.audioUrl);
-                                                    },
-                                                    color: Color(0xff616161),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                          position: info.position,
-                                          translationFactor: 300.0,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

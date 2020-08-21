@@ -38,7 +38,9 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
     //Return String
     String memberSeq = prefs.getString('memberSeq');
     List<SaveList> saveList =  await getSaveList(memberSeq);
-    saveLists = saveList;
+    if(saveLists[0]?.vocaKor != null) {
+      saveLists = saveList;
+    }
     _memberSeq = memberSeq;
     if(this.mounted) {
       setState(() {

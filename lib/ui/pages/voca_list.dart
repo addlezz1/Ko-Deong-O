@@ -118,10 +118,9 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
           children: <Widget>[
             ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              itemCount: widget.questions.length,
+              itemCount: widget.questions.length + 1,
               itemBuilder: _buildItem,
             ),
-
             Positioned(
               right: size.width * 0.05,
               bottom: size.height * 0.03,
@@ -231,7 +230,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                               onPressed: () async{
                                 List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng', textVoca: 'voca')
                                 ));
                               },
                               shape: RoundedRectangleBorder(
@@ -336,7 +335,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                               onPressed: () async{
                                 List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor', textVoca: 'voca')
                                 ));
                               },
                               shape: RoundedRectangleBorder(
@@ -403,7 +402,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                               onPressed: () async{
                                 List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound', textVoca: 'voca')
                                 ));
                               },
                               shape: RoundedRectangleBorder(
@@ -482,8 +481,9 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                       ),
                     ),
                   ),
-                  Opacity(
+                  AnimatedOpacity(
                     opacity: (_isClicked == false)? 0.5 : 1.0,
+                    duration: Duration(milliseconds: 300),
                     child: Transform(
                       transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value)),
                       alignment: Alignment.center,
@@ -552,6 +552,11 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
 
     Size size = MediaQuery.of(context).size;
 
+    if(index == widget.questions.length) {
+      return SizedBox(
+        height: size.height * 0.1,
+      );
+    }
     Question question = widget.questions[index];
     return Card(
       child: Padding(

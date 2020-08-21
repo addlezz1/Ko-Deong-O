@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -31,6 +36,7 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
   AnimationController animationController;
   Animation degOneTranslationAnimation, degTwoTranslationAnimation, degThreeTranslationAnimation;
   Animation rotationAnimation;
+  AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
   String _memberSeq = '';
   String _bookSeq = '';
@@ -38,6 +44,8 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
   String _bookName = '';
   int _bookIndex = 0;
   int _unitSort = 0;
+  String soundClick = '0';
+  bool changeSex = true;
 
   final GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
@@ -115,8 +123,6 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
     animationController.addListener(() {
       setState(() {});
     });
-
-    print(widget.unit.category);
   }
 
   @override
@@ -132,6 +138,10 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
 
     String sentenceEng = '';
     String sentenceKor = '';
+    List<Audio> playList = new List<Audio>();
+    for (var i = 0; i < widget.questions.length; i++) {
+      (changeSex == true)? playList.add(Audio.network(widget.questions[i].audioUrl)): playList.add(Audio.network(widget.questions[i].mediaUrl));
+    }
 
     if(widget.type == 'reading') {
       for (var i = 0; i < widget.questions.length; i++) {
@@ -296,6 +306,101 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
               ),
             ),
             Positioned(
+              left: size.width * 0.38,
+              bottom: size.height * 0.03,
+              child: Material(
+                elevation: 3,
+                borderRadius: new BorderRadius.circular(size.width * 0.05),
+                child: Row(
+                  children: <Widget>[
+                    (soundClick == '0') ? IconButton(
+                      icon: GradientIcon(
+                        icon: FontAwesomeIcons.playCircle,
+                        size: size.width * 0.075,
+                        gradient: new LinearGradient(
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.lightBlueAccent
+                          ],
+                        ),
+                      ),
+                      onPressed: () async {
+                        await assetsAudioPlayer.open(
+                          Playlist(
+                              audios: playList
+                          ),
+                          headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplug
+                        );
+                        setState(() {
+                          soundClick = '1';
+                        });
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ) : (soundClick == '1') ? IconButton(
+                      icon: GradientIcon(
+                        icon: FontAwesomeIcons.pauseCircle,
+                        size: size.width * 0.075,
+                        gradient: new LinearGradient(
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.lightBlueAccent
+                          ],
+                        ),
+                      ),
+                      onPressed: () async{
+                        assetsAudioPlayer.pause();
+                        setState(() {
+                          soundClick = '2';
+                        });
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ) : IconButton(
+                      icon: GradientIcon(
+                        icon: FontAwesomeIcons.playCircle,
+                        size: size.width * 0.075,
+                        gradient: new LinearGradient(
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.lightBlueAccent
+                          ],
+                        ),
+                      ),
+                      onPressed: () async{
+                        assetsAudioPlayer.play();
+                        setState(() {
+                          soundClick = '1';
+                        });
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ),
+                    IconButton(
+                      icon: GradientIcon(
+                        icon: FontAwesomeIcons.stopCircle,
+                        size: size.width * 0.075,
+                        gradient: new LinearGradient(
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.lightBlueAccent
+                          ],
+                        ),
+                      ),
+                      onPressed: () {
+                        assetsAudioPlayer.stop();
+                        setState(() {
+                          soundClick = '0';
+                        });
+                      },
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
               right: size.width * 0.05,
               bottom: size.height * 0.03,
               child: Stack(
@@ -404,12 +509,12 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
                               onPressed: (widget.type == 'reading')? () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[4].type, learns[4].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng', textVoca: 'text')
                                 ));
                               } : () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[5].type, learns[5].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng', textVoca: 'text')
                                 ));
                               },
                               shape: RoundedRectangleBorder(
@@ -514,12 +619,12 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
                               onPressed: (widget.type == 'reading')? () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[4].type, learns[4].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor', textVoca: 'text')
                                 ));
                               } : () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[5].type, learns[5].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor', textVoca: 'text')
                                 ));
                               },
                               shape: RoundedRectangleBorder(
@@ -586,12 +691,12 @@ class _TextListPageState extends State<TextListPage> with TickerProviderStateMix
                               onPressed: (widget.type == 'reading')? () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[4].type, learns[4].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound', textVoca: 'text')
                                 ));
                               } : () async{
                                 List<Question> questions =  await getQuestions(widget.unit, learns[5].type, learns[5].code);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound',)
+                                    builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound', textVoca: 'text')
                                 ));
                               },
                               shape: RoundedRectangleBorder(

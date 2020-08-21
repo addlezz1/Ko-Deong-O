@@ -27,78 +27,112 @@ class _HomePageState extends State<SettingsPage> {
 
   String _loginUserName;
   String _loginNickName;
+  String _studentImage = '';
 
   void getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String loginUserName = prefs.getString('loginUserName');
     String loginNickName = prefs.getString('loginNickName');
+    String studentImage = prefs.getString('studentImage');
     if(this.mounted) {
       setState(() {
         _loginUserName = loginUserName;
         _loginNickName = loginNickName;
+        _studentImage = studentImage;
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState(){
+    super.initState();
     getUserInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Theme(
-        data: Theme.of(context).copyWith(
-          brightness: Brightness.dark,
-          primaryColor: Colors.purple,
+      body: Container(
+        width: size.width,
+        height: size.height,
+        decoration: new BoxDecoration(
+          gradient: new LinearGradient(
+              colors: [
+                Colors.white70,
+                Colors.lightBlueAccent
+              ],
+              begin: const FractionalOffset(0.5, 0.5),
+              end: const FractionalOffset(0.5, 1.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
         ),
         child: DefaultTextStyle(
           style: TextStyle(
             color: Colors.white,
           ),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(32.0),
+            padding: EdgeInsets.all(size.width * 0.08),
             child: Column(
               children: <Widget>[
-                const SizedBox(height: 30.0),
-                Row(
-                  children: <Widget>[
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/logo.png'),
-                          fit: BoxFit.cover,
-                        ),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(_loginUserName.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                          Text(
-                            _loginNickName.toString(),
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                            ),
-                          ),
+                SizedBox(height: size.height * 0.07),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: new LinearGradient(
+                        colors: [
+                          Colors.blueAccent,
+                          Colors.lightBlueAccent
                         ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp),
+                    borderRadius: BorderRadius.circular(size.width * 0.05),
+                  ),
+                  padding: EdgeInsets.all(size.width * 0.05),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        width: size.width * 0.17,
+                        height: size.width * 0.17,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: (_studentImage == "http://talkwho.whitesoft.net/") ?
+                            NetworkImage('http://talkwho.whitesoft.net/data/profile/c1c709c9e534e58312c6c10ed9fccc28.png')
+                                : NetworkImage(_studentImage),
+                            fit: BoxFit.cover,
+                          ),
+                          border: Border.all(
+                            color: Colors.blueAccent,
+                            width: 2.0,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(width: size.width * 0.05),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(_loginUserName.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            Text(
+                              _loginNickName.toString(),
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20.0),
                 ListTile(

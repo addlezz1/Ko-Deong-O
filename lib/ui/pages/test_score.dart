@@ -54,6 +54,7 @@ class _HomePageState extends State<TestScorePage> with TickerProviderStateMixin 
   @override
   Widget build(BuildContext context){
 
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
@@ -64,23 +65,38 @@ class _HomePageState extends State<TestScorePage> with TickerProviderStateMixin 
         ),
         elevation: 0,
       ),
-      body: SafeArea(
-        child: AnimationLimiter(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(8.0),
-            itemCount: testScores.length,
-            itemBuilder: (BuildContext context, int index){
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                duration: const Duration(milliseconds: 375),
-                child: SlideAnimation(
-                  verticalOffset: 44.0,
-                  child: FadeInAnimation(
-                    child: _buildCategoryItem(context, index),
+      body: Container(
+        width: size.width,
+        height: size.height,
+        decoration: new BoxDecoration(
+          gradient: new LinearGradient(
+              colors: [
+                Colors.white70,
+                Colors.lightBlueAccent
+              ],
+              begin: const FractionalOffset(0.5, 0.5),
+              end: const FractionalOffset(0.5, 1.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+        ),
+        child: SafeArea(
+          child: AnimationLimiter(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: testScores.length,
+              itemBuilder: (BuildContext context, int index){
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 375),
+                  child: SlideAnimation(
+                    verticalOffset: 44.0,
+                    child: FadeInAnimation(
+                      child: _buildCategoryItem(context, index),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -92,12 +108,38 @@ class _HomePageState extends State<TestScorePage> with TickerProviderStateMixin 
     Size size = MediaQuery.of(context).size;
 
     TestScore testScore = testScores[index];
+    String aIndex = ':';
+    int questionIndex = testScore?.result?.indexOf(aIndex);
+
     return AnimatedSize(
       vsync: this,
       duration: Duration(milliseconds: 300),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-        height: (_bookIndex == index && selected) ? size.height * 0.2 : size.height * 0.1,
+        height: (_bookIndex == index && selected) ? size.height * 0.25 : size.height * 0.1,
+        decoration: (_bookIndex == index) ? BoxDecoration(
+          gradient: new LinearGradient(
+              colors: [
+                Colors.blueAccent,
+                Colors.lightBlueAccent
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+          borderRadius: BorderRadius.circular(size.width * 0.1),
+        ) : BoxDecoration(
+          gradient: new LinearGradient(
+              colors: [
+                Colors.green,
+                Colors.greenAccent
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+          borderRadius: BorderRadius.circular(size.width * 0.1),
+        ),
         child: new MaterialButton(
           elevation: 3.0,
           highlightElevation: 1.0,
@@ -112,30 +154,35 @@ class _HomePageState extends State<TestScorePage> with TickerProviderStateMixin 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          color: (_bookIndex == index) ? Colors.greenAccent : Colors.white,
-          textColor: Colors.black,
+          textColor: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               AutoSizeText(
-                testScore?.unitName == null ? '' : testScore.unitName + ' ' + testScore.registDate.substring(0,10),
-                minFontSize: 8.0,
+                testScore?.unitName == null ? '' : '<' + testScore.registDate.substring(5,10) + '> ' + testScore.unitName,
+                minFontSize: 14.0,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: 2,
                 wrapWords: false,
               ),
               (_bookIndex == index && selected) ? AutoSizeText(
-                testScore?.unitName == null ? '' : testScore.score,
-                minFontSize: 8.0,
-                textAlign: TextAlign.center,
+                testScore?.unitName == null ? '' : '점수: ' + testScore.score + '(' + testScore.result.substring(0,questionIndex) + ')',
+                minFontSize: 18.0,
+                textAlign: TextAlign.left,
                 maxLines: 1,
                 wrapWords: false,
               ) : SizedBox(),
+              (_bookIndex == index && selected) ? SizedBox(
+                height: size.height * 0.01,
+              ) : SizedBox(),
+              (_bookIndex == index && selected) ?
+              testScore?.unitName == null ? '' : Text('틀린 단어:', style: TextStyle(fontSize: 18.0),) :
+              SizedBox(),
               (_bookIndex == index && selected) ? AutoSizeText(
-                testScore?.unitName == null ? '' : testScore.result,
-                minFontSize: 8.0,
-                textAlign: TextAlign.center,
-                maxLines: 2,
+                testScore?.unitName == null ? '' : testScore.result.substring(questionIndex+1,testScore.result.length-1),
+                minFontSize: 14.0,
+                textAlign: TextAlign.left,
+                maxLines: 3,
                 wrapWords: false,
               ): SizedBox(),
             ],

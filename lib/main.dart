@@ -13,10 +13,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   SharedPreferences _sharedPreferences;
-  String _loginUserID = '';
+  String _loginUserID;
 
   @override
-  void initstate(){
+  void initState(){
     super.initState();
     _getLoginID();
   }
@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Open Trivia',
+      title: 'Lion',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         accentColor: Colors.pink,
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
         )
       ),
 
-      home: (_loginUserID != '')? HomePage() : LoginPage(),
+      home: (_loginUserID != null)? HomePage() : LoginPage(),
     );
   }
 

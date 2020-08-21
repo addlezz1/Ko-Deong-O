@@ -167,7 +167,7 @@ class _QuizPageState extends State<Study2Page> {
       });
     } else {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => QuizFinishedPage(questions: widget.questions, answers: _answers)
+        builder: (_) => QuizFinishedPage(questions: widget.questions, answers: _answers, unit: widget.unit, code: '102',)
       ));
     }
   }

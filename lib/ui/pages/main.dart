@@ -90,10 +90,14 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
     String loginNickName = prefs.getString('loginNickName');
     String memberSeq = prefs.getString('memberSeq');
     String studentImage = prefs.getString('studentImage');
-    _loginUserName = loginUserName;
-    _loginNickName = loginNickName;
-    _studentImage = studentImage;
-    _memberSeq = memberSeq;
+    if (this.mounted) {
+      setState(() {
+        _loginUserName = loginUserName;
+        _loginNickName = loginNickName;
+        _studentImage = studentImage;
+        _memberSeq = memberSeq;
+      });
+    }
     if(_memberSeq != null) {
       CurrentLearn currentUnit = await getCurrentUnit(_memberSeq);
       //print(currentUnit.unitSeq);
@@ -128,7 +132,6 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
     if(_memberSeq != null) {
       _getCurrentUnit();
     }
-
     animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
     animationController_2 = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
 
@@ -178,7 +181,6 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
     if(units[_bookIndex]?.category != null) {
       _getLearn();
     }
-
     return Scaffold(
         key: _key,
         appBar: AppBar(
@@ -195,7 +197,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                   currentAccountPicture: new CircleAvatar(
                     backgroundColor: Colors.white,
                     backgroundImage: (_studentImage == "http://talkwho.whitesoft.net/") ?
-                    NetworkImage('http://talkwho.whitesoft.net/data/profile/c1c709c9e534e58312c6c10ed9fccc28.png')
+                    AssetImage('assets/images/no_profile.png')
                     : NetworkImage(_studentImage),
                   ),
               ),
@@ -483,7 +485,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                     ));
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
-                                      content: Text("준비중입니다"),
+                                      content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
                                     ));
                                   }
                                 },
@@ -552,7 +554,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                     ));
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
-                                      content: Text("준비중입니다"),
+                                      content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
                                     ));
                                   }
                                 },
@@ -621,7 +623,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                     ));
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
-                                      content: Text("준비중입니다"),
+                                      content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
                                     ));
                                   }
                                 },
@@ -683,15 +685,14 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                 splashColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
                                 onPressed: () async{
-                                  List<Question> questions =  await getVocaQuestions(units[_bookIndex], learns[0].type, learns[0].code, _memberSeq);
-                                  Navigator.push(context, MaterialPageRoute(
-                                      builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex],)
-                                  ));
                                   try{
-
+                                    List<Question> questions =  await getVocaQuestions(units[_bookIndex], learns[0].type, learns[0].code, _memberSeq);
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex],)
+                                    ));
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
-                                      content: Text("준비중입니다"),
+                                      content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
                                     ));
                                   }
                                 },
@@ -802,7 +803,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
     _sharedPreferences = await SharedPreferences.getInstance();
     if(this.mounted) {
       setState(() {
-        _sharedPreferences.setString('loginID', '');
+        _sharedPreferences.setString('loginID', null);
         _sharedPreferences.setString('loginPassword', '');
         _sharedPreferences.setString('loginUserName', '');
         _sharedPreferences.setString('loginNickName', '');

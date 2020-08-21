@@ -209,7 +209,7 @@ Future<bool> getTestResult(String memberSeq, String classSeq, String unitSeq,
   print(_params);
 
   final response = await http.post(url, body:_params);
-  //print(response.body);
+  print(response.body);
 
   return true;
 }
@@ -252,7 +252,7 @@ Future<List<TestScore>> getTestScore(String memberSeq) async {
   Map<String,String> _params = {};
   _params['member_seq'] = memberSeq;
   final response = await http.post(url, body:_params);
-  print(response.body);
+  //print(response.body);
 
   List<Map<String, dynamic>> testScores = List<Map<String,dynamic>>.from(json.decode(response.body)["results"]);
 
@@ -270,7 +270,7 @@ Future<bool> getSavedWord(String memberSeq, String unitSeq, String vocaSeq,
   _params['voca_seq'] = vocaSeq;
   _params['voca_eng'] = vocaEng;
   _params['voca_kor'] = vocaKor;
-  print(_params);
+  //print(_params);
 
   final response = await http.post(url, body:_params);
   //print(response.body);
@@ -284,7 +284,7 @@ Future<bool> getDeleteWord(String memberSeq, String vocaSeq) async {
   Map<String,String> _params = {};
   _params['member_seq'] = memberSeq;
   _params['voca_seq'] = vocaSeq;
-  print(_params);
+  //print(_params);
 
   final response = await http.post(url, body:_params);
   //print(response.body);

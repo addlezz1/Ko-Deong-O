@@ -49,6 +49,9 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
     bool success = await getTestResult(memberSeq, classSeq, widget.unit.unitSeq, widget.code,
         widget.questions.length.toString(), correct.toString(), wrongWord);
 
+    print(success);
+    print(correct);
+
     if(this.mounted) {
       setState(() {
         _correct = correct;
@@ -57,18 +60,13 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
   }
 
   void initState(){
-    super.initState();
-
     _getTestResult();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context){
-
-    //print(correct);
     //print(wrongWord);
-
-
 
     //int correctAnswers;
 
