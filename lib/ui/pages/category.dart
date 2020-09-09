@@ -12,7 +12,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryPage extends StatefulWidget {
-
+  final String bookValue;
+  const CategoryPage({Key key, this.bookValue}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -134,7 +135,8 @@ class _HomePageState extends State<CategoryPage> {
   }
   _categoryPressed(BuildContext context,Category cate) {
     Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (_) => Category2Page( category: cate,)
+        builder: (_) => Category2Page( category: cate, bookValue: widget.bookValue,)
+
     ));
   }
 }

@@ -7,6 +7,7 @@ import 'package:talkwho/models/login.dart';
 import 'package:talkwho/models/profile.dart';
 import 'package:talkwho/models/question.dart';
 import 'package:talkwho/models/book.dart';
+import 'package:talkwho/models/register.dart';
 import 'package:talkwho/models/saveList.dart';
 import 'package:talkwho/models/testResult.dart';
 import 'package:talkwho/models/testScore.dart';
@@ -43,12 +44,13 @@ Future<List<Category>> getCategory(String seq, String schoolGrade) async {
   return Category.fromData(categories);
 }
 
-Future<List<Book>> getBook(String cate_seq) async {
+Future<List<Book>> getBook(String cate_seq,String bookValue) async {
   String url = "$baseUrl/api/main/book";
   //String url = "http://eduby.whitesoft.net/api/main/progress";
 
   Map<String,String> _params = {};
   _params['cate_seq'] = cate_seq;
+  _params['book_value'] = bookValue;
   //print(_params);
   final response = await http.post(url, body:_params);
   //print(response.body);
@@ -163,19 +165,23 @@ Future<Profile> getLogin(String userID, String password) async {
 }
 
 //비동기인 경우에는 async, await 으로 싱크를 맞춰줘야 함 PHP -> Flutter
-Future<bool> getRegister(String userID, String password) async {
+Future<String> getRegister(String userID, String password, String userName, String nickName, String schoolGrade) async {
   String url = "$baseUrl/api/member/check_userid";
   String url2 = "$baseUrl/api/member/signup";
 
   Map<String,String> _params = {};
   _params['userid'] = userID;
   _params['password'] = password;
+  _params['user_name'] = userName;
+  _params['nick_name'] = nickName;
+  _params['school_grade'] = schoolGrade;
   print(_params);
 
   bool success;
   final response = await http.post(url, body: _params);
   var status = json.decode(response.body)['status'];
   print(response.body);
+  //print(json.decode(response.body)['status']);
   success = false;
   if(status == 'SUCCESS') {
     final response2 = await http.post(url2, body: _params);
@@ -191,7 +197,7 @@ Future<bool> getRegister(String userID, String password) async {
 
   //return Login.fromMap(json.decode(response.body)["result"]);
 
-  return success;
+  return status;
 }
 
 Future<bool> getTestResult(String memberSeq, String classSeq, String unitSeq,

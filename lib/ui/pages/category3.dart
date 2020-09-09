@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:talkwho/models/category.dart';
+import 'package:talkwho/models/question.dart';
 import 'package:talkwho/models/unit.dart';
 import 'package:talkwho/ui/pages/category2.dart';
 import 'package:talkwho/ui/pages/home.dart';
 import 'package:talkwho/ui/pages/main.dart';
+import 'package:talkwho/ui/pages/text_list.dart';
+import 'package:talkwho/ui/pages/voca_list.dart';
 import 'package:talkwho/ui/widgets/quiz_options.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:talkwho/resources/api_provider.dart';
@@ -17,7 +20,8 @@ import 'package:talkwho/models/currentLearn.dart';
 class Category3Page extends StatefulWidget {
   final Book book;
   final Category category;
-  const Category3Page({Key key, this.book, this.category}) : super(key: key);
+  final String bookValue;
+  const Category3Page({Key key, this.book, this.category, this.bookValue}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -28,12 +32,16 @@ class _HomePageState extends State<Category3Page> {
   List<Unit> units = List(999);
 
   SharedPreferences _sharedPreferences;
+  String _memberSeq = '';
 
   void _getUnit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String memberSeq = prefs.getString('memberSeq');
     List<Unit> unit =  await getUnit(widget.book.bookSeq);
     if(this.mounted) {
       setState(() {
         units = unit;
+        _memberSeq = memberSeq;
       });
     }
   }
@@ -47,7 +55,7 @@ class _HomePageState extends State<Category3Page> {
     return WillPopScope(
       onWillPop: () async{
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (_) => Category2Page(category: widget.category,)
+            builder: (_) => Category2Page(category: widget.category, bookValue: widget.bookValue,)
         ),);
         return false;
       },
@@ -59,7 +67,7 @@ class _HomePageState extends State<Category3Page> {
             ),
             onPressed: (){
               Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (_) => Category2Page(category: widget.category,)
+                  builder: (_) => Category2Page(category: widget.category,bookValue: widget.bookValue,)
               ));
             },
           ),
@@ -127,7 +135,22 @@ class _HomePageState extends State<Category3Page> {
           var memberSeq = _sharedPreferences.getString('memberSeq');
           CurrentLearn currentLearn = await getCurrentLearn(memberSeq,unit.unitSeq,widget.book.bookSeq,index.toString(),widget.category.title,widget.book.bookName);
           print(currentLearn);
-          _categoryPressed(context, unit);
+          if(widget.book.bookName == 'Reading'){
+            List<Question> questions =  await getQuestions(unit, 'text', '201');
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (_) => TextListPage(questions: questions, unit: unit,type: 'reading',)
+            ));
+          } else if(widget.book.bookName == 'Listening'){
+            List<Question> questions =  await getQuestions(unit, 'text', '202');
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (_) => TextListPage(questions: questions, unit: unit,type: 'listening',)
+            ));
+          } else if(widget.book.bookName.substring(0,4) == 'Voca'){
+            List<Question> questions =  await getVocaQuestions(unit, 'text', '101', _memberSeq);
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (_) => VocaListPage(questions: questions, unit: unit)
+            ));
+          }
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -163,9 +186,7 @@ class _HomePageState extends State<Category3Page> {
             ),
       );
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (_) => HomePage()
-      ));
+
     }
   }
 }

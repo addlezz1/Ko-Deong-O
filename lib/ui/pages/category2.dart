@@ -10,7 +10,8 @@ import 'category3.dart';
 
 class Category2Page extends StatefulWidget {
   final Category category;
-  const Category2Page({Key key, this.category}) : super(key: key);
+  final String bookValue;
+  const Category2Page({Key key, this.category, this.bookValue}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -21,7 +22,7 @@ class _HomePageState extends State<Category2Page> {
   List<Book> units = List(999);
 
   void _getUnit() async {
-    List<Book> unit =  await getBook(widget.category.cateSeq);
+    List<Book> unit =  await getBook(widget.category.cateSeq, widget.bookValue);
     if(this.mounted) {
       setState(() {
         units = unit;
@@ -38,7 +39,7 @@ class _HomePageState extends State<Category2Page> {
     return WillPopScope(
       onWillPop: () async{
         Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (_) => CategoryPage()
+            builder: (_) => CategoryPage(bookValue: widget.bookValue,)
         ),);
         return false;
       },
@@ -50,7 +51,7 @@ class _HomePageState extends State<Category2Page> {
             ),
             onPressed: (){
               Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (_) => CategoryPage()
+                  builder: (_) => CategoryPage(bookValue: widget.bookValue,)
               ));
             },
           ),
@@ -137,7 +138,7 @@ class _HomePageState extends State<Category2Page> {
   _categoryPressed(BuildContext context,Book book) {
 
       Navigator.pushReplacement(context, MaterialPageRoute(
-          builder: (_) => Category3Page(book: book, category : widget.category)
+          builder: (_) => Category3Page(book: book, category : widget.category, bookValue : widget.bookValue)
       ));
   }
 }

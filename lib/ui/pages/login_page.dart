@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:talkwho/models/register.dart';
 import 'package:talkwho/resources/api_provider.dart';
 import 'package:talkwho/style/theme.dart' as Theme;
 import 'package:talkwho/ui/pages/home.dart';
@@ -35,6 +36,7 @@ class _LoginPageState extends State<LoginPage>
   final FocusNode myFocusNodePassword = FocusNode();
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
+  final FocusNode myFocusNickName = FocusNode();
 
   TextEditingController loginEmailController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
@@ -47,11 +49,13 @@ class _LoginPageState extends State<LoginPage>
   String userID = '';
   String password = '';
 
-  TextEditingController signupEmailController = new TextEditingController();
-  TextEditingController signupNameController = new TextEditingController();
+  TextEditingController signupUserNameController = new TextEditingController();
+  TextEditingController signupIDController = new TextEditingController();
   TextEditingController signupPasswordController = new TextEditingController();
-  TextEditingController signupConfirmPasswordController =
-      new TextEditingController();
+  TextEditingController signupNickNameController = new TextEditingController();
+  TextEditingController signupConfirmPasswordController = new TextEditingController();
+  String school = '초등학교';
+  String grade = '1학년';
 
   PageController _pageController;
 
@@ -62,6 +66,7 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     Login login = widget.logins;
     Size size = MediaQuery.of(context).size;
+
     return new Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -539,6 +544,17 @@ class _LoginPageState extends State<LoginPage>
 
   Widget _buildSignUp(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    String schoolGrade;
+
+    if(school == '초등학교'){
+      schoolGrade = 'P'+grade.substring(0,1);
+    } else if(school == '중학교'){
+      schoolGrade = 'M'+grade.substring(0,1);
+    } else {
+      schoolGrade = 'H'+grade.substring(0,1);
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
@@ -555,146 +571,254 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 child: Container(
                   width: size.width * 0.71,
-                  height: size.height * 0.53,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodeName,
-                          controller: signupNameController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.idCard,
-                              color: Colors.blueAccent,
-                              size: size.width * 0.05,
-                            ),
-                            hintText: "ID",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: size.width * 0.63,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodeEmail,
-                          controller: signupEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.envelope,
-                              color: Colors.blueAccent,
-                              size: size.width * 0.05,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: size.width * 0.63,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodePassword,
-                          controller: signupPasswordController,
-                          obscureText: _obscureTextSignup,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.lock,
-                              color: Colors.blueAccent,
-                              size: size.width * 0.05,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignup,
-                              child: Icon(
-                                _obscureTextSignup
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                  height: size.height * 0.57,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextField(
+                            focusNode: myFocusNodeName,
+                            controller: signupIDController,
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            style: TextStyle(
+                                fontFamily: "WorkSansSemiBold",
+                                fontSize: 16.0,
+                                color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FontAwesomeIcons.idCard,
                                 color: Colors.blueAccent,
-                                size: size.width * 0.04,
+                                size: size.width * 0.05,
+                              ),
+                              hintText: "ID",
+                              hintStyle: TextStyle(
+                                  fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: size.width * 0.63,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextField(
+                            focusNode: myFocusNodeEmail,
+                            controller: signupUserNameController,
+                            keyboardType: TextInputType.name,
+                            style: TextStyle(
+                                fontFamily: "WorkSansSemiBold",
+                                fontSize: 16.0,
+                                color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FontAwesomeIcons.user,
+                                color: Colors.blueAccent,
+                                size: size.width * 0.05,
+                              ),
+                              hintText: "한글 이름",
+                              hintStyle: TextStyle(
+                                  fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: size.width * 0.63,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextField(
+                            focusNode: myFocusNickName,
+                            controller: signupNickNameController,
+                            keyboardType: TextInputType.name,
+                            style: TextStyle(
+                                fontFamily: "WorkSansSemiBold",
+                                fontSize: 16.0,
+                                color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FontAwesomeIcons.font,
+                                color: Colors.blueAccent,
+                                size: size.width * 0.05,
+                              ),
+                              hintText: "영어 이름",
+                              hintStyle: TextStyle(
+                                  fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: size.width * 0.63,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                FontAwesomeIcons.school,
+                                color: Colors.blueAccent,
+                                size: size.width * 0.05,
+                              ),
+                              SizedBox(
+                                width: size.width * 0.05,
+                              ),
+                              DropdownButton<String>(
+                                value: school,
+                                icon: Icon(FontAwesomeIcons.caretDown),
+                                iconSize: size.width * 0.05,
+                                elevation: 3,
+                                style: TextStyle(color: Colors.blueAccent),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.black,
+                                ),
+                                onChanged: (String schoolValue) {
+                                  setState(() {
+                                    school = schoolValue;
+                                  });
+                                },
+                                items: <String>['초등학교', '중학교', '고등학교']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                              SizedBox(
+                                width: size.width * 0.05,
+                              ),
+                              DropdownButton<String>(
+                                value: grade,
+                                icon: Icon(FontAwesomeIcons.caretDown),
+                                iconSize: size.width * 0.05,
+                                elevation: 3,
+                                style: TextStyle(color: Colors.blueAccent),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.black,
+                                ),
+                                onChanged: (String gradeValue) {
+                                  setState(() {
+                                    grade = gradeValue;
+                                  });
+                                },
+                                items: (school == '초등학교')? <String>['1학년', '2학년', '3학년', '4학년', '5학년', '6학년']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList() : <String>['1학년', '2학년', '3학년']
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: size.width * 0.63,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextField(
+                            focusNode: myFocusNodePassword,
+                            controller: signupPasswordController,
+                            obscureText: _obscureTextSignup,
+                            style: TextStyle(
+                                fontFamily: "WorkSansSemiBold",
+                                fontSize: 16.0,
+                                color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FontAwesomeIcons.lock,
+                                color: Colors.blueAccent,
+                                size: size.width * 0.05,
+                              ),
+                              hintText: "Password",
+                              hintStyle: TextStyle(
+                                  fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                              suffixIcon: GestureDetector(
+                                onTap: _toggleSignup,
+                                child: Icon(
+                                  _obscureTextSignup
+                                      ? FontAwesomeIcons.eye
+                                      : FontAwesomeIcons.eyeSlash,
+                                  color: Colors.blueAccent,
+                                  size: size.width * 0.04,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        width: size.width * 0.63,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          controller: signupConfirmPasswordController,
-                          obscureText: _obscureTextSignupConfirm,
-                          style: TextStyle(
-                              fontFamily: "WorkSansSemiBold",
-                              fontSize: 16.0,
-                              color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              FontAwesomeIcons.lock,
-                              color: Colors.blueAccent,
-                              size: size.width * 0.05,
-                            ),
-                            hintText: "Confirmation",
-                            hintStyle: TextStyle(
-                                fontFamily: "WorkSansSemiBold", fontSize: 16.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignupConfirm,
-                              child: Icon(
-                                _obscureTextSignupConfirm
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                        Container(
+                          width: size.width * 0.63,
+                          height: 1.0,
+                          color: Colors.grey[400],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                          child: TextField(
+                            controller: signupConfirmPasswordController,
+                            obscureText: _obscureTextSignupConfirm,
+                            style: TextStyle(
+                                fontFamily: "WorkSansSemiBold",
+                                fontSize: 16.0,
+                                color: Colors.black),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              icon: Icon(
+                                FontAwesomeIcons.lock,
                                 color: Colors.blueAccent,
-                                size: size.width * 0.04,
+                                size: size.width * 0.05,
+                              ),
+                              hintText: "Confirmation",
+                              hintStyle: TextStyle(
+                                  fontFamily: "WorkSansSemiBold", fontSize: 16.0),
+                              suffixIcon: GestureDetector(
+                                onTap: _toggleSignupConfirm,
+                                child: Icon(
+                                  _obscureTextSignupConfirm
+                                      ? FontAwesomeIcons.eye
+                                      : FontAwesomeIcons.eyeSlash,
+                                  color: Colors.blueAccent,
+                                  size: size.width * 0.04,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: size.height * 0.5),
+                margin: EdgeInsets.only(top: size.height * 0.54),
                 decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   /*boxShadow: <BoxShadow>[
@@ -711,8 +835,8 @@ class _LoginPageState extends State<LoginPage>
                   ],*/
                   gradient: new LinearGradient(
                       colors: [
-                        Colors.grey,
-                        Colors.grey
+                        Colors.lightBlueAccent,
+                        Colors.blueAccent
                       ],
                       begin: const FractionalOffset(0.2, 0.2),
                       end: const FractionalOffset(1.0, 1.0),
@@ -735,14 +859,9 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ),
                     onPressed:
-                        () async {}/*{
-                      //if((loginEmailController.text == widget.logins.userID) && (loginPasswordController.text == widget.logins.password)){
-                      bool bLogin = await getRegister(
-                          signupNameController.text,
-                          signupPasswordController.text
-                      );
+                        () async {
 
-                      if (signupNameController.text == '') {
+                      if (signupIDController.text == '') {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text("아이디를 입력해주세요."),
                         ));
@@ -754,20 +873,29 @@ class _LoginPageState extends State<LoginPage>
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text("확인 비밀번호가 일치하지 않습니다."),
                         ));
-                      } else if (bLogin == false) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text("이미 존재하는 아이디입니다."),
-                        ));
                       } else if (signupPasswordController.text == signupConfirmPasswordController.text) {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content: Text("회원가입이 완료되었습니다."),
-                        ));
+                        String bLogin = await getRegister(
+                            signupIDController.text.trim(),
+                            signupPasswordController.text.trim(),
+                            signupUserNameController.text.trim(),
+                            signupNickNameController.text.trim(),
+                            schoolGrade
+                        );
+                        if(bLogin == "SUCCESS") {
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text("회원가입이 완료되었습니다."),
+                          ));
+                        } else {
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            content: Text("이미 존재하는 아이디입니다."),
+                          ));
+                        }
                       } else {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text("로그인에 실패했습니다. 아이디 또는 비밀번호를 확인해주세요."),
                         ));
                       }
-                    }*/
+                    }
                     ),
               ),
             ],

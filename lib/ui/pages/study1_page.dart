@@ -320,20 +320,20 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                     bottom: size.height * 0.03,
                                     child: Material(
                                       elevation: 3,
-                                      borderRadius: new BorderRadius.circular(size.width * 0.05),
+                                      borderRadius: new BorderRadius.circular(size.width * 0.08),
                                       child: Row (
                                         children: <Widget>[
-                                          new ParallaxContainer(
+                                          new Container(
                                             child: Center(
                                               child: Padding(
-                                                padding: EdgeInsets.only(top: size.width * 0.03),
+                                                padding: EdgeInsets.only(top: size.width * 0.01),
                                                 child: Column(
                                                   children: <Widget>[
                                                     GestureDetector(
                                                       child: (type == 'eng') ? IconButton(
                                                         icon: GradientIcon(
                                                           icon: FontAwesomeIcons.checkCircle,
-                                                          size: size.width * 0.075,
+                                                          size: size.width * 0.1,
                                                           gradient: new LinearGradient(
                                                             colors: [
                                                               Colors.blueAccent,
@@ -346,11 +346,12 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                             selectedEng = !selectedEng;
                                                           });
                                                         },
+                                                        iconSize: size.width * 0.11,
                                                         color: Color(0xff616161),
                                                       ) : (type == 'kor') ? IconButton(
                                                         icon: GradientIcon(
                                                           icon: FontAwesomeIcons.checkCircle,
-                                                          size: size.width * 0.075,
+                                                          size: size.width * 0.1,
                                                           gradient: new LinearGradient(
                                                             colors: [
                                                               Colors.blueAccent,
@@ -363,11 +364,12 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                             selectedKor = !selectedKor;
                                                           });
                                                         },
+                                                        iconSize: size.width * 0.11,
                                                         color: Color(0xff616161),
                                                       ) : IconButton(
                                                         icon: GradientIcon(
                                                           icon: FontAwesomeIcons.checkCircle,
-                                                          size: size.width * 0.075,
+                                                          size: size.width * 0.1,
                                                           gradient: new LinearGradient(
                                                             colors: [
                                                               Colors.blueAccent,
@@ -381,6 +383,7 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                             selectedKor = !selectedKor;
                                                           });
                                                         },
+                                                        iconSize: size.width * 0.11,
                                                         color: Color(0xff616161),
                                                       ),
                                                     ),
@@ -388,8 +391,6 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                 ),
                                               ),
                                             ),
-                                            position: info.position,
-                                            translationFactor: 300.0,
                                           ),
                                           /*MaterialButton(
                                           onPressed: () {
@@ -424,13 +425,13 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                           new Container(
                                             child: Center(
                                               child: Padding(
-                                                padding: const EdgeInsets.only(top: 10.0),
+                                                padding: EdgeInsets.only(top: size.width * 0.01),
                                                 child: Column(
                                                   children: <Widget>[
                                                     (soundClick == true) ? IconButton(
                                                       icon: GradientIcon(
                                                         icon: FontAwesomeIcons.playCircle,
-                                                        size: size.width * 0.075,
+                                                        size: size.width * 0.1,
                                                         gradient: new LinearGradient(
                                                           colors: [
                                                             Colors.blueAccent,
@@ -444,13 +445,19 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                         setState(() {
                                                           soundClick = !soundClick;
                                                         });
+                                                        advancedPlayer.onPlayerCompletion.listen((event) {
+                                                          setState(() {
+                                                            soundClick = true;
+                                                          });
+                                                        });
                                                       },
+                                                      iconSize: size.width * 0.11,
                                                       splashColor: Colors.transparent,
                                                       highlightColor: Colors.transparent,
                                                     ) : IconButton(
                                                       icon: GradientIcon(
                                                         icon: FontAwesomeIcons.pauseCircle,
-                                                        size: size.width * 0.075,
+                                                        size: size.width * 0.1,
                                                         gradient: new LinearGradient(
                                                           colors: [
                                                             Colors.blueAccent,
@@ -465,6 +472,7 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                           soundClick = !soundClick;
                                                         });
                                                       },
+                                                      iconSize: size.width * 0.11,
                                                       splashColor: Colors.transparent,
                                                       highlightColor: Colors.transparent,
                                                     ),
@@ -476,13 +484,13 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                           new Container(
                                             child: Center(
                                               child: Padding(
-                                                padding: const EdgeInsets.only(top: 10.0),
+                                                padding: EdgeInsets.only(top: size.width * 0.01),
                                                 child: Column(
                                                   children: <Widget>[
                                                     IconButton(
                                                       icon: GradientIcon(
                                                         icon: FontAwesomeIcons.stopCircle,
-                                                        size: size.width * 0.075,
+                                                        size: size.width * 0.1,
                                                         gradient: new LinearGradient(
                                                           colors: [
                                                             Colors.blueAccent,
@@ -497,6 +505,7 @@ class _Study1State extends State<Study1Page> with TickerProviderStateMixin{
                                                           soundClick = true;
                                                         });
                                                       },
+                                                      iconSize: size.width * 0.11,
                                                       splashColor: Colors.transparent,
                                                       highlightColor: Colors.transparent,
                                                     ),

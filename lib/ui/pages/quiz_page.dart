@@ -1,4 +1,6 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:talkwho/models/unit.dart';
 import 'package:talkwho/models/question.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -9,14 +11,17 @@ import 'dart:io';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:talkwho/ui/widgets/circular_button.dart';
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
+  final List<Audio> playlist;
   final Unit unit;
   final String sentence;
   final String code;
+  final String type;
 
-  const QuizPage({Key key, @required this.questions, this.unit, @required this.sentence, @required this.code}) : super(key: key);
+  const QuizPage({Key key, @required this.questions, this.playlist, this.unit, @required this.sentence, @required this.code, @required this.type}) : super(key: key);
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -36,6 +41,7 @@ class _QuizPageState extends State<QuizPage> {
 
   AudioCache audioCache = AudioCache();
   AudioPlayer advancedPlayer = AudioPlayer();
+  AssetsAudioPlayer assetsAudioPlayer = AssetsAudioPlayer();
 
   @override
   void initState() {
@@ -47,6 +53,15 @@ class _QuizPageState extends State<QuizPage> {
       }
       advancedPlayer.startHeadlessService();
     }
+
+    if(widget.type == 'listening') {
+      assetsAudioPlayer.open(
+        Playlist(
+            audios: widget.playlist
+        ),
+        headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplug
+        );
+    }
   }
 
 
@@ -55,6 +70,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context){
     Size size = MediaQuery.of(context).size;
     Question question = widget.questions[_currentIndex];
+    print(question.mediaUrl);
     final List<dynamic> options = question.incorrectAnswers;
     for(int i = 4; i>=0; i--) {
       if(question?.incorrectAnswers[i] == null) {
@@ -110,26 +126,16 @@ class _QuizPageState extends State<QuizPage> {
                       ),
                     ),*/
 
-                  (question?.mediaUrl != 'http://talkwho.whitesoft.net/')
+                  (question?.mediaUrl != 'http://talkwho.whitesoft.net/' && widget.type == 'listening')
                     ? Center(
                     child: GestureDetector(
                       onTap: () => setState(() => _isImageShown = !_isImageShown),
-                      child: new Image.network(question.mediaUrl,height: 150,fit: BoxFit.fill,
+                      child: new Image.network(question.mediaUrl,height: size.height * 0.27,fit: BoxFit.fill,
                       ),
                     )
                   )
                       :SizedBox(height: size.height * 0.01),
-
-                  (question?.mediaUrl != 'http://talkwho.whitesoft.net/')
-                    ? Center(
-                      child: GestureDetector(
-                        onTap: () => setState(() => _isImageShown = !_isImageShown),
-                        child: new Image.network(question.mediaUrl,height: 300,fit: BoxFit.fill,
-                        ),
-                      )
-                  )
-                      :SizedBox(height: size.height * 0.01),
-                  Card(
+                  (widget.type == 'reading')?Card(
                     elevation: 3,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0, bottom: 18.0),
@@ -155,11 +161,14 @@ class _QuizPageState extends State<QuizPage> {
                         ],
                       ),
                     ),
-                  ),
+                  ):
+                  SizedBox(height: size.height * 0.01),
                   Card(
-                    elevation: 3,
+                    elevation: 2,
                     child: SizedBox(
-                      height: size.height * 0.3,
+                      height: (widget.type == 'reading')?size.height * 0.3:
+                              (question?.mediaUrl == 'http://talkwho.whitesoft.net/' )?size.height * 0.63:
+                              size.height * 0.36,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: Column(
@@ -181,26 +190,64 @@ class _QuizPageState extends State<QuizPage> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: size.width * 0.3,
-                      height: size.height * 0.05,
-                      decoration: new BoxDecoration(
-                        gradient: new LinearGradient(
-                          colors: [
-                            Colors.blueAccent,
-                            Colors.lightBlueAccent
-                          ],
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  Row(
+                    children : <Widget>[
+                      (question?.mediaUrl != 'http://talkwho.whitesoft.net/' && widget.type == 'reading')? CircularButton(
+                        color: Colors.blue,
+                        width: size.width * 0.12,
+                        height: size.width * 0.12,
+                        icon: Icon(
+                          FontAwesomeIcons.image,
+                          color: Colors.white,
                         ),
-                        borderRadius: BorderRadius.circular(size.width * 0.14),
+                        onClick: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                                elevation: 16,
+                                child: Container(
+                                  height: size.height * 0.6,
+                                  width: size.width * 0.95,
+                                  child: Image.network(question.mediaUrl
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ) :
+                      SizedBox(
+                        width: size.width * 0.12,
                       ),
-                      child: MaterialButton(
-                        child: Text( _currentIndex == (widget.questions.length - 1) ? "Submit" : "Next",style: TextStyle(fontSize: size.width * 0.042, fontWeight: FontWeight.bold),),
-                        onPressed: _nextSubmit,
-                        textColor: Colors.white70,
+                      SizedBox(
+                        width: size.width * 0.2,
                       ),
-                    ),
+                      SizedBox(
+                        child: Container(
+                          width: size.width * 0.3,
+                          height: size.height * 0.07,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.width * 0.14),
+                          ),
+                          child: MaterialButton(
+                            child: Text( _currentIndex == (widget.questions.length - 1) ? "Submit" : "Next",style: TextStyle(fontSize: size.width * 0.042, fontWeight: FontWeight.bold),),
+                            onPressed: _nextSubmit,
+                            textColor: Colors.white70,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -223,6 +270,7 @@ class _QuizPageState extends State<QuizPage> {
           _currentIndex++;
       });
     } else {
+      assetsAudioPlayer.stop();
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => QuizFinishedPage(questions: widget.questions, answers: _answers, unit: widget.unit, code: widget.code,)
       ));
@@ -240,7 +288,7 @@ class _QuizPageState extends State<QuizPage> {
             FlatButton(
               child: Text("예"),
               onPressed: (){
-                advancedPlayer.stop();
+                assetsAudioPlayer.stop();
                 Navigator.pop(context,true);
               },
             ),

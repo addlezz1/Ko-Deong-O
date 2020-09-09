@@ -1,13 +1,9 @@
 class Register {
-  final String userID;
-  final String password;
-  final String confirmPassword;
+  final String status;
 
-  Register({this.userID, this.password, this.confirmPassword});
-  Register.fromMap(Map<String, dynamic> data):
-        userID = data["userid"],
-        password = data["password"],
-        confirmPassword = '1';
+  Register({this.status,});
+  Register.fromMap(Map<String, dynamic> status):
+        status = status[0];
   static Register fromData(Map<String,dynamic>data){
     return Register.fromMap(data);
   }

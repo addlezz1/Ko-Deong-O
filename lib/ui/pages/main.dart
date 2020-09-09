@@ -184,7 +184,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
     return Scaffold(
         key: _key,
         appBar: AppBar(
-          title: Text('eduby'),
+          title: Text('고등語'),
           elevation: 0,
         ),
         drawer: new Drawer(
@@ -235,7 +235,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                 onTap: (){
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => CategoryPage()),
+                    MaterialPageRoute(builder: (context) => CategoryPage(bookValue :'none',)),
                   );
                 },
               ),
@@ -351,11 +351,23 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                           child: MaterialButton(
                             elevation: 1.0,
                             highlightElevation: 1.0,
-                            onPressed: (){
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => CategoryPage()),
-                              );
+                            onPressed: ()async{
+                              if(_bookName == 'Reading'){
+                                List<Question> questions =  await getQuestions(units[_bookIndex], 'text', '201');
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'reading',)
+                                ));
+                              } else if(_bookName == 'Listening'){
+                                List<Question> questions =  await getQuestions(units[_bookIndex], 'text', '202');
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'listening',)
+                                ));
+                              } else if(_bookName.substring(0,4) == 'Voca'){
+                                List<Question> questions =  await getVocaQuestions(units[_bookIndex], 'text', '101', _memberSeq);
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex])
+                                ));
+                              }
                             },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(size.width * 0.1),
@@ -479,10 +491,14 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                 highlightColor: Colors.transparent,
                                 onPressed: () async{
                                   try{
-                                    List<Question> questions =  await getQuestions(units[_bookIndex], learns[5].type, learns[5].code);
-                                    Navigator.push(context, MaterialPageRoute(
-                                        builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'listening',)
-                                    ));
+                                    //List<Question> questions =  await getQuestions(units[_bookIndex], learns[5].type, learns[5].code);
+                                    //Navigator.push(context, MaterialPageRoute(
+                                    //    builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'listening',)
+                                    //));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CategoryPage(bookValue :'S',)),
+                                    );
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
                                       content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
@@ -548,10 +564,15 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                 highlightColor: Colors.transparent,
                                 onPressed: () async{
                                   try{
+                                    /*print(learns[5].code);
                                     List<Question> questions =  await getQuestions(units[_bookIndex], learns[5].type, learns[5].code);
                                     Navigator.push(context, MaterialPageRoute(
                                         builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'listening',)
-                                    ));
+                                    ));*/
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CategoryPage(bookValue :'L',)),
+                                    );
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
                                       content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
@@ -617,10 +638,16 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                 highlightColor: Colors.transparent,
                                 onPressed: () async{
                                   try{
+                                    /*print(learns[4].type);
+                                    print( learns[4].code);
                                     List<Question> questions =  await getQuestions(units[_bookIndex], learns[4].type, learns[4].code);
                                     Navigator.push(context, MaterialPageRoute(
                                         builder: (_) => TextListPage(questions: questions, unit: units[_bookIndex],type: 'reading',)
-                                    ));
+                                    ));*/
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CategoryPage(bookValue :'R',)),
+                                    );
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
                                       content: Text("준비중입니다"), duration: Duration(milliseconds: 500),
@@ -686,10 +713,14 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin{
                                 highlightColor: Colors.transparent,
                                 onPressed: () async{
                                   try{
-                                    List<Question> questions =  await getVocaQuestions(units[_bookIndex], learns[0].type, learns[0].code, _memberSeq);
+                                    /*List<Question> questions =  await getVocaQuestions(units[_bookIndex], learns[0].type, learns[0].code, _memberSeq);
                                     Navigator.push(context, MaterialPageRoute(
                                         builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex],)
-                                    ));
+                                    ));*/
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CategoryPage(bookValue :'V',)),
+                                    );
                                   } catch(e){
                                     _key.currentState.showSnackBar(SnackBar(
                                       content: Text("준비중입니다"), duration: Duration(milliseconds: 500),

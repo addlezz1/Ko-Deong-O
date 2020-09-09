@@ -101,7 +101,7 @@ class _HomePageState extends State<SettingsPage> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             image: (_studentImage == "http://talkwho.whitesoft.net/") ?
-                            NetworkImage('http://talkwho.whitesoft.net/data/profile/c1c709c9e534e58312c6c10ed9fccc28.png')
+                            AssetImage('assets/images/no_profile.png')
                                 : NetworkImage(_studentImage),
                             fit: BoxFit.cover,
                           ),

@@ -79,9 +79,9 @@ class _HomePageState extends State<HomePage> {
         body: PageView(
           children: [
             Container(color: Colors.white, child: MainPage()),
-            Container(color: Colors.white, child: CategoryPage()),
+            Container(color: Colors.white, child: CategoryPage(bookValue: 'none',)),
             Container(color: Colors.white, child: CurrentsPage(),),
-            Container(color: Colors.white, child: ChewieDemo()),
+            //Container(color: Colors.white, child: ChewieDemo()),
             Container(color: Colors.white, child: SettingsPage()),
           ],
           controller: pageController,
@@ -106,11 +106,11 @@ class _HomePageState extends State<HomePage> {
                     color: (_page == 2) ? Colors.black : Colors.white),
                 title: Container(height: 0.0),
                 backgroundColor: Colors.white),
-            BottomNavigationBarItem(
+            /*BottomNavigationBarItem(
                 icon: Icon(Icons.person,
                     color: (_page == 3) ? Colors.black : Colors.white),
                 title: Container(height: 0.0),
-                backgroundColor: Colors.white),
+                backgroundColor: Colors.white),*/
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings,
                     color: (_page == 4) ? Colors.black : Colors.white),
