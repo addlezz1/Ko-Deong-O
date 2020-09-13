@@ -11,7 +11,6 @@ class TabIndicationPainter extends CustomPainter {
 
   final PageController pageController;
 
-
   TabIndicationPainter(
       {this.dxTarget = 125.0,
         this.dxEntry = 25.0,

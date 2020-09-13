@@ -63,72 +63,148 @@ class _LoginPageState extends State<LoginPage>
   Color right = Colors.white;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    return Scaffold(
+      key: _scaffoldKey,
+      body: OrientationBuilder(
+        builder: (context, orientation){
+          if(orientation == Orientation.portrait){
+            return portraitMode(context,_scaffoldKey);
+          }else{
+            return landscapeMode(context,_scaffoldKey);
+          }
+        },
+      ),
+    );
+  }
+  Widget portraitMode(context, key) {
     Login login = widget.logins;
     Size size = MediaQuery.of(context).size;
-
-    return new Scaffold(
-      key: _scaffoldKey,
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        child: SingleChildScrollView(
-              child: Container(
-                width: size.width,
-                height: size.height,
-                decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
-                      colors: [
-                        Colors.white70,
-                        Colors.lightBlueAccent
-                      ],
-                      begin: const FractionalOffset(0.5, 0.5),
-                      end: const FractionalOffset(0.5, 1.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
+    return NotificationListener<OverscrollIndicatorNotification>(
+      child: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+                colors: [
+                  Colors.white70,
+                  Colors.lightBlueAccent
+                ],
+                begin: const FractionalOffset(0.5, 0.5),
+                end: const FractionalOffset(0.5, 1.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: size.height * 0.2),
+                child: _buildMenuBar(context),
+              ),
+              Expanded(
+                flex: 2,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (i) {
+                    if (i == 0) {
+                      if (this.mounted) {
+                        setState(() {
+                          right = Colors.white;
+                          left = Colors.blueAccent;
+                        });
+                      }
+                    }  else if (i == 1) {
+                      if(this.mounted) {
+                        setState(() {
+                          right = Colors.blueAccent;
+                          left = Colors.white;
+                        });
+                      }
+                    }
+                  },
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: size.height * 0.2),
-                      child: _buildMenuBar(context),
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignIn(context),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (i) {
-                          if (i == 0) {
-                            if (this.mounted) {
-                              setState(() {
-                                right = Colors.white;
-                                left = Colors.blueAccent;
-                              });
-                            }
-                          }  else if (i == 1) {
-                            if(this.mounted) {
-                              setState(() {
-                                right = Colors.blueAccent;
-                                left = Colors.white;
-                              });
-                            }
-                          }
-                        },
-                        children: <Widget>[
-                          new ConstrainedBox(
-                            constraints: const BoxConstraints.expand(),
-                            child: _buildSignIn(context),
-                          ),
-                          new ConstrainedBox(
-                            constraints: const BoxConstraints.expand(),
-                            child: _buildSignUp(context),
-                          ),
-                        ],
-                      ),
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignUp(context),
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  @override
+  Widget landscapeMode(context, key) {
+    Login login = widget.logins;
+    Size size = MediaQuery.of(context).size;
+    return NotificationListener<OverscrollIndicatorNotification>(
+      child: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+                colors: [
+                  Colors.white70,
+                  Colors.lightBlueAccent
+                ],
+                begin: const FractionalOffset(0.5, 0.5),
+                end: const FractionalOffset(1.0, 0.5),
+                stops: [1.0, 0.0],
+                tileMode: TileMode.clamp),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: size.height * 0.2),
+                child: _buildMenuBar(context),
+              ),
+              Expanded(
+                flex: 2,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (i) {
+                    if (i == 0) {
+                      if (this.mounted) {
+                        setState(() {
+                          right = Colors.white;
+                          left = Colors.blueAccent;
+                        });
+                      }
+                    }  else if (i == 1) {
+                      if(this.mounted) {
+                        setState(() {
+                          right = Colors.blueAccent;
+                          left = Colors.white;
+                        });
+                      }
+                    }
+                  },
+                  children: <Widget>[
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignIn(context),
+                    ),
+                    new ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: _buildSignUp(context),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -190,7 +266,9 @@ class _LoginPageState extends State<LoginPage>
         borderRadius: BorderRadius.all(Radius.circular(size.width * 0.07)),
       ),
       child: CustomPaint(
-        painter: TabIndicationPainter(pageController: _pageController, radius: size.width * 0.052),
+        painter: TabIndicationPainter(pageController: _pageController, radius: size.width * 0.052,
+            dxEntry: size.width * 0.07, dxTarget: size.width * 0.3, dy: size.height * 0.037),
+
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -204,7 +282,7 @@ class _LoginPageState extends State<LoginPage>
                   style: TextStyle(
                       color: left,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
+                      fontSize: size.width * 0.04,
                       fontFamily: "WorkSansSemiBold"),
                 ),
               ),
@@ -220,7 +298,7 @@ class _LoginPageState extends State<LoginPage>
                   style: TextStyle(
                       color: right,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
+                      fontSize: size.width * 0.04,
                       fontFamily: "WorkSansSemiBold"),
                 ),
               ),

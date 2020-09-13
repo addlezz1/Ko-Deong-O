@@ -205,11 +205,23 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     ),
                     onClick: (_bookIndex == 0)? _isFirstUnit
                         : () async{
-                      List<Question> questions =  await getVocaQuestions(units[_bookIndex-1], 'text', '101', _memberSeq);
-                      CurrentLearn currentLearn = await getCurrentLearn(_memberSeq,units[_bookIndex-1].unitSeq,_bookSeq,(_bookIndex-1).toString(),_categoryName,_bookName);
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex-1])
-                      ));
+                      try {
+                        List<Question> questions = await getVocaQuestions(
+                            units[_bookIndex - 1], 'text', '101', _memberSeq);
+                        CurrentLearn currentLearn = await getCurrentLearn(
+                            _memberSeq, units[_bookIndex - 1].unitSeq, _bookSeq,
+                            (_bookIndex - 1).toString(), _categoryName,
+                            _bookName);
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (_) =>
+                                VocaListPage(questions: questions,
+                                    unit: units[_bookIndex - 1])
+                        ));
+                      } catch(e){
+                        _key.currentState.showSnackBar(SnackBar(
+                          content: Text("이전 단어가 없습니다."), duration: Duration(milliseconds: 500),
+                        ));
+                      }
                     },
                   ),
                 ),
@@ -335,11 +347,23 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     ),
                     onClick: (_bookIndex == _unitSort-1)? _isLastUnit
                         :() async{
-                      List<Question> questions =  await getVocaQuestions(units[_bookIndex+1], 'text', '101', _memberSeq);
-                      CurrentLearn currentLearn = await getCurrentLearn(_memberSeq,units[_bookIndex+1].unitSeq,_bookSeq,(_bookIndex+1).toString(),_categoryName,_bookName);
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                          builder: (_) => VocaListPage(questions: questions, unit: units[_bookIndex+1])
-                      ));
+                      try {
+                        List<Question> questions = await getVocaQuestions(
+                            units[_bookIndex + 1], 'text', '101', _memberSeq);
+                        CurrentLearn currentLearn = await getCurrentLearn(
+                            _memberSeq, units[_bookIndex + 1].unitSeq, _bookSeq,
+                            (_bookIndex + 1).toString(), _categoryName,
+                            _bookName);
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (_) =>
+                                VocaListPage(questions: questions,
+                                    unit: units[_bookIndex + 1])
+                        ));
+                      }  catch(e){
+                        _key.currentState.showSnackBar(SnackBar(
+                          content: Text("다음 단어가 없습니다."), duration: Duration(milliseconds: 500),
+                        ));
+                      }
                     },
                   ),
                 ),
