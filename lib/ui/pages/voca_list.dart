@@ -134,7 +134,19 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    var orientation = MediaQuery.of(context).orientation;
+
+    return Scaffold(
+      body: Form(
+        child: (orientation == Orientation.portrait)
+            ? portraitMode(context)
+            : landscapeMode(context),
+      ),
+    );
+  }
+
+  Widget portraitMode(context){
     List<Audio> playList = new List<Audio>();
     for (var i = 0; i < widget.questions.length; i++) {
       playList.add(Audio.network(widget.questions[i].audioUrl));
@@ -152,7 +164,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
          appBar: AppBar(
            leading: IconButton(
              icon: Icon(
-               Icons.home, color: Colors.white,
+               Icons.home, color: Colors.white, size: size.height * 0.03,
              ),
              onPressed: (){
                Navigator.pushReplacement(context, MaterialPageRoute(
@@ -192,16 +204,17 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
               ),
               Positioned(
                 left: size.width * 0.02,
-                bottom: size.height * 0.455,
+                bottom: size.width < 700 ? size.height * 0.455 : size.height * 0.485,
                 child: Opacity(
                   opacity: 0.3,
                   child: CircularButton(
                     color: Colors.blue,
-                    width: size.width * 0.12,
-                    height: size.width * 0.12,
+                    width: size.width < 700 ? size.width * 0.12 : size.width * 0.09,
+                    height: size.width < 700 ? size.width * 0.12 : size.width * 0.09,
                     icon: Icon(
                       Icons.arrow_back_ios,
                       color: Colors.white,
+                      size: size.width * 0.05,
                     ),
                     onClick: (_bookIndex == 0)? _isFirstUnit
                         : () async{
@@ -227,7 +240,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                 ),
               ),
               Positioned(
-                left: size.width * 0.34,
+                left: size.width < 700 ? size.width * 0.368 : size.width * 0.383,
                 bottom: size.height * 0.02,
                 child: Material(
                   elevation: 3,
@@ -237,7 +250,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                       (soundClick == '0') ? IconButton(
                         icon: GradientIcon(
                           icon: FontAwesomeIcons.playCircle,
-                          size: size.width * 0.1,
+                          size: size.width < 700 ? size.width * 0.1 : size.width * 0.085,
                           gradient: new LinearGradient(
                             colors: [
                               Colors.blueAccent,
@@ -263,13 +276,13 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                             }
                           });
                         },
-                        iconSize: size.width * 0.11,
+                        iconSize: size.width < 700 ? size.width * 0.11 : size.width * 0.09,
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                       ) : (soundClick == '1') ? IconButton(
                         icon: GradientIcon(
                           icon: FontAwesomeIcons.pauseCircle,
-                          size: size.width * 0.1,
+                          size: size.width < 700 ? size.width * 0.1 : size.width * 0.085,
                           gradient: new LinearGradient(
                             colors: [
                               Colors.blueAccent,
@@ -283,13 +296,13 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                             soundClick = '2';
                           });
                         },
-                        iconSize: size.width * 0.11,
+                        iconSize: size.width < 700 ? size.width * 0.11 : size.width * 0.09,
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                       ) : IconButton(
                         icon: GradientIcon(
                           icon: FontAwesomeIcons.playCircle,
-                          size: size.width * 0.1,
+                          size: size.width < 700 ? size.width * 0.1 : size.width * 0.085,
                           gradient: new LinearGradient(
                             colors: [
                               Colors.blueAccent,
@@ -303,14 +316,14 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                             soundClick = '1';
                           });
                         },
-                        iconSize: size.width * 0.11,
+                        iconSize: size.width < 700 ? size.width * 0.11 : size.width * 0.09,
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                       ),
                       IconButton(
                         icon: GradientIcon(
                           icon: FontAwesomeIcons.stopCircle,
-                          size: size.width * 0.1,
+                          size: size.width < 700 ? size.width * 0.1 : size.width * 0.085,
                           gradient: new LinearGradient(
                             colors: [
                               Colors.blueAccent,
@@ -324,7 +337,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                             soundClick = '0';
                           });
                         },
-                        iconSize: size.width * 0.11,
+                        iconSize: size.width < 700 ? size.width * 0.11 : size.width * 0.09,
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                       ),
@@ -334,16 +347,17 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
               ),
               Positioned(
                 right: size.width * 0.02,
-                bottom: size.height * 0.455,
+                bottom: size.width < 700 ? size.height * 0.455 : size.height * 0.485,
                 child: Opacity(
                   opacity: 0.3,
                   child: CircularButton(
                     color: Colors.blue,
-                    width: size.width * 0.12,
-                    height: size.width * 0.12,
+                    width: size.width < 700 ? size.width * 0.12 : size.width * 0.09,
+                    height: size.width < 700 ? size.width * 0.12 : size.width * 0.09,
                     icon: Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.white,
+                      size: size.width * 0.05,
                     ),
                     onClick: (_bookIndex == _unitSort-1)? _isLastUnit
                         :() async{
@@ -387,14 +401,14 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     Transform.translate(
                       offset:
                       Offset.fromDirection(
-                          getRadiansFromDegree(180), degOneTranslationAnimation.value * size.width * 0.23),
+                          getRadiansFromDegree(180), size.width < 700 ? degOneTranslationAnimation.value * size.width * 0.23 : degOneTranslationAnimation.value * size.width * 0.2),
                       child: Transform(
                         transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
                           ..scale(degOneTranslationAnimation.value),
                         alignment: Alignment.center,
                         child: Container(
-                          width: size.width * 0.12,
-                          height: size.width * 0.12,
+                          width: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
+                          height: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
                           decoration: new BoxDecoration(
                             gradient: new LinearGradient(
                               colors: [
@@ -411,8 +425,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    width: size.width * 0.10,
-                                    height: size.width * 0.10,
+                                    width: size.width < 700 ? size.width * 0.10 : size.width * 0.08,
+                                    height: size.width < 700 ? size.width * 0.1 : size.width * 0.08,
                                     decoration: new BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(size.width * 0.8),
@@ -434,7 +448,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                         child: GradientText("한",
                                             gradient: LinearGradient(
                                                 colors: [Colors.blueAccent, Colors.lightBlueAccent]),
-                                            style: TextStyle(fontSize: size.width * 0.055, fontWeight: FontWeight.bold),
+                                            style: TextStyle(fontSize: size.width < 700 ? size.width * 0.055 : size.width * 0.045, fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.center
                                         ),
                                       ),
@@ -456,7 +470,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                       ),
                                       GradientIcon(
                                         icon: FontAwesomeIcons.font,
-                                        size: size.width * 0.07,
+                                        size: size.width < 700 ? size.width * 0.07 : size.width * 0.05,
                                         gradient: new LinearGradient(
                                           colors: [
                                             Colors.blueAccent,
@@ -469,7 +483,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 ],
                               ),
                               MaterialButton(
-                                height: size.width * 0.14,
+                                height: size.width < 700 ? size.width * 0.14 : size.width * 0.12,
                                 elevation: 1.0,
                                 highlightElevation: 1.0,
                                 splashColor: Colors.transparent,
@@ -492,14 +506,14 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     Transform.translate(
                       offset:
                       Offset.fromDirection(
-                          getRadiansFromDegree(210), degOneTranslationAnimation.value * size.width * 0.23),
+                          getRadiansFromDegree(210), size.width < 700 ? degOneTranslationAnimation.value * size.width * 0.23 : degOneTranslationAnimation.value * size.width * 0.2),
                       child: Transform(
                         transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
                           ..scale(degOneTranslationAnimation.value),
                         alignment: Alignment.center,
                         child: Container(
-                          width: size.width * 0.12,
-                          height: size.width * 0.12,
+                          width: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
+                          height: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
                           decoration: new BoxDecoration(
                             gradient: new LinearGradient(
                               colors: [
@@ -516,8 +530,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    width: size.width * 0.10,
-                                    height: size.width * 0.10,
+                                    width: size.width < 700 ? size.width * 0.1 : size.width * 0.08,
+                                    height: size.width < 700 ? size.width * 0.1 : size.width * 0.08,
                                     decoration: new BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(size.width * 0.8),
@@ -538,7 +552,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                         opacity: 0.5,
                                         child: GradientIcon(
                                           icon: FontAwesomeIcons.font,
-                                          size: size.width * 0.055,
+                                          size: size.width < 700 ? size.width * 0.055 : size.width * 0.045,
                                           gradient: new LinearGradient(
                                             colors: [
                                               Colors.blueAccent,
@@ -566,7 +580,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                       GradientText("한",
                                           gradient: LinearGradient(
                                               colors: [Colors.blueAccent, Colors.lightBlueAccent]),
-                                          style: TextStyle(fontSize: size.width * 0.068, fontWeight: FontWeight.bold),
+                                          style: TextStyle(fontSize: size.width < 700 ? size.width * 0.068 : size.width * 0.051, fontWeight: FontWeight.bold),
                                           textAlign: TextAlign.center
                                       ),
                                     ],
@@ -574,7 +588,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 ],
                               ),
                               MaterialButton(
-                                height: size.width * 0.14,
+                                height: size.width < 700 ? size.width * 0.14 : size.width * 0.12,
                                 elevation: 1.0,
                                 highlightElevation: 1.0,
                                 splashColor: Colors.transparent,
@@ -597,14 +611,14 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     Transform.translate(
                       offset:
                       Offset.fromDirection(
-                          getRadiansFromDegree(240), degOneTranslationAnimation.value * size.width * 0.23),
+                          getRadiansFromDegree(240), size.width < 700 ? degOneTranslationAnimation.value * size.width * 0.23 : degOneTranslationAnimation.value * size.width * 0.2),
                       child: Transform(
                         transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
                           ..scale(degOneTranslationAnimation.value),
                         alignment: Alignment.center,
                         child: Container(
-                          width: size.width * 0.12,
-                          height: size.width * 0.12,
+                          width: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
+                          height: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
                           decoration: new BoxDecoration(
                             gradient: new LinearGradient(
                               colors: [
@@ -621,8 +635,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    width: size.width * 0.10,
-                                    height: size.width * 0.10,
+                                    width: size.width < 700 ? size.width * 0.1 : size.width * 0.08,
+                                    height: size.width < 700 ? size.width * 0.1 : size.width * 0.08,
                                     decoration: new BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(size.width * 0.8),
@@ -632,7 +646,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                               ),
                               GradientIcon(
                                 icon: FontAwesomeIcons.headphones,
-                                size: size.width * 0.08,
+                                size: size.width < 700 ? size.width * 0.08 : size.width * 0.06,
                                 gradient: new LinearGradient(
                                   colors: [
                                     Colors.blueAccent,
@@ -641,7 +655,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 ),
                               ),
                               MaterialButton(
-                                height: size.width * 0.14,
+                                height: size.width < 700 ? size.width * 0.14 : size.width * 0.12,
                                 elevation: 1.0,
                                 highlightElevation: 1.0,
                                 splashColor: Colors.transparent,
@@ -664,14 +678,14 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                     Transform.translate(
                       offset:
                       Offset.fromDirection(
-                          getRadiansFromDegree(270), degOneTranslationAnimation.value * size.width * 0.23),
+                          getRadiansFromDegree(270), size.width < 700 ? degOneTranslationAnimation.value * size.width * 0.23 : degOneTranslationAnimation.value * size.width * 0.2),
                       child: Transform(
                         transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
                           ..scale(degOneTranslationAnimation.value),
                         alignment: Alignment.center,
                         child: Container(
-                          width: size.width * 0.12,
-                          height: size.width * 0.12,
+                          width: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
+                          height: size.width < 700 ? size.width * 0.12 : size.width * 0.10,
                           decoration: new BoxDecoration(
                             gradient: new LinearGradient(
                               colors: [
@@ -688,8 +702,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    width: size.width * 0.10,
-                                    height: size.width * 0.10,
+                                    width: size.width < 700 ? size.width * 0.10 : size.width * 0.08,
+                                    height: size.width < 700 ? size.width * 0.10 : size.width * 0.08,
                                     decoration: new BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(size.width * 0.8),
@@ -699,7 +713,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                               ),
                               GradientIcon(
                                 icon: FontAwesomeIcons.question,
-                                size: size.width * 0.08,
+                                size: size.width < 700 ? size.width * 0.08 : size.width * 0.06,
                                 gradient: new LinearGradient(
                                   colors: [
                                     Colors.blueAccent,
@@ -708,7 +722,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 ),
                               ),
                               MaterialButton(
-                                height: size.width * 0.14,
+                                height: size.width < 700 ? size.width * 0.14 : size.width * 0.12,
                                 elevation: 1.0,
                                 highlightElevation: 1.0,
                                 splashColor: Colors.transparent,
@@ -735,8 +749,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                         transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value)),
                         alignment: Alignment.center,
                         child: Container(
-                          width: size.width * 0.16,
-                          height: size.width * 0.16,
+                          width: size.width < 700 ? size.width * 0.16 : size.width * 0.13,
+                          height: size.width < 700 ? size.width * 0.16 : size.width * 0.13,
                           decoration: new BoxDecoration(
                             gradient: new LinearGradient(
                               colors: [
@@ -753,8 +767,8 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Container(
-                                    width: size.width * 0.05,
-                                    height: size.width * 0.05,
+                                    width: size.width < 700 ? size.width * 0.05 : size.width * 0.04,
+                                    height: size.width < 700 ? size.width * 0.05 : size.width * 0.04,
                                     decoration: new BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(size.width * 0.8),
@@ -763,7 +777,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                                 ],
                               ),
                               MaterialButton(
-                                height: size.width * 0.14,
+                                height: size.width < 700 ? size.width * 0.14 : size.width * 0.12,
                                 elevation: 1.0,
                                 highlightElevation: 1.0,
                                 splashColor: Colors.transparent,
@@ -784,7 +798,669 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                           ),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget landscapeMode(context){
+    List<Audio> playList = new List<Audio>();
+    for (var i = 0; i < widget.questions.length; i++) {
+      playList.add(Audio.network(widget.questions[i].audioUrl));
+    }
+    Size size = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: () async{
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (_) => HomePage()
+        ),);
+        return false;
+      },
+      child: Scaffold(
+        key: _key,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.home, color: Colors.white, size: size.width * 0.03,
+            ),
+            onPressed: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (_) => HomePage()
+              ));
+            },
+          ),
+          title: AutoSizeText(
+            widget.unit.unitName,
+            minFontSize: 10.0,
+            maxLines: 1,
+            wrapWords: false,
+          ),
+          elevation: 0,
+        ),
+        body: Container(
+          width: size.width,
+          height: size.height,
+          decoration: new BoxDecoration(
+            gradient: new LinearGradient(
+                colors: [
+                  Colors.white70,
+                  Colors.lightBlueAccent
+                ],
+                begin: const FractionalOffset(0.5, 0.5),
+                end: const FractionalOffset(0.5, 1.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp
+            ),
+          ),
+          child: Stack(
+            children: <Widget>[
+              ListView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: widget.questions.length + 1,
+                itemBuilder: _buildItemL,
+              ),
+              Positioned(
+                left: size.width * 0.02,
+                bottom: size.width < 700 ? size.height * 0.435 : size.height * 0.455,
+                child: Opacity(
+                  opacity: 0.3,
+                  child: CircularButton(
+                    color: Colors.blue,
+                    width: size.width < 700 ? size.height * 0.12 : size.height * 0.09,
+                    height: size.width < 700 ? size.height * 0.12 : size.height * 0.09,
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                      size: size.height * 0.05,
+                    ),
+                    onClick: (_bookIndex == 0)? _isFirstUnit
+                        : () async{
+                      try {
+                        List<Question> questions = await getVocaQuestions(
+                            units[_bookIndex - 1], 'text', '101', _memberSeq);
+                        CurrentLearn currentLearn = await getCurrentLearn(
+                            _memberSeq, units[_bookIndex - 1].unitSeq, _bookSeq,
+                            (_bookIndex - 1).toString(), _categoryName,
+                            _bookName);
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (_) =>
+                                VocaListPage(questions: questions,
+                                    unit: units[_bookIndex - 1])
+                        ));
+                      } catch(e){
+                        _key.currentState.showSnackBar(SnackBar(
+                          content: Text("이전 단어가 없습니다."), duration: Duration(milliseconds: 500),
+                        ));
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                left: size.width < 700 ? size.width * 0.388 : size.width * 0.41,
+                bottom: size.height * 0.02,
+                child: Material(
+                  elevation: 3,
+                  borderRadius: new BorderRadius.circular(size.width * 0.1),
+                  child: Row(
+                    children: <Widget>[
+                      (soundClick == '0') ? IconButton(
+                        icon: GradientIcon(
+                          icon: FontAwesomeIcons.playCircle,
+                          size: size.width < 700 ? size.height * 0.1 : size.height * 0.085,
+                          gradient: new LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              Colors.lightBlueAccent
+                            ],
+                          ),
+                        ),
+                        onPressed: () async {
+                          assetsAudioPlayer.open(
+                              Playlist(
+                                  audios: playList
+                              ),
+                              headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplug
+                          );
+                          setState(() {
+                            soundClick = '1';
+                          });
+                          assetsAudioPlayer.playlistFinished.listen((data) {
+                            if(data == true){
+                              setState(() {
+                                soundClick = '0';
+                              });
+                            }
+                          });
+                        },
+                        iconSize: size.width < 700 ? size.height * 0.11 : size.height * 0.09,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ) : (soundClick == '1') ? IconButton(
+                        icon: GradientIcon(
+                          icon: FontAwesomeIcons.pauseCircle,
+                          size: size.width < 700 ? size.height * 0.1 : size.height * 0.085,
+                          gradient: new LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              Colors.lightBlueAccent
+                            ],
+                          ),
+                        ),
+                        onPressed: () async{
+                          assetsAudioPlayer.pause();
+                          setState(() {
+                            soundClick = '2';
+                          });
+                        },
+                        iconSize: size.width < 700 ? size.height * 0.11 : size.height * 0.09,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ) : IconButton(
+                        icon: GradientIcon(
+                          icon: FontAwesomeIcons.playCircle,
+                          size: size.width < 700 ? size.height * 0.1 : size.height * 0.085,
+                          gradient: new LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              Colors.lightBlueAccent
+                            ],
+                          ),
+                        ),
+                        onPressed: () async{
+                          assetsAudioPlayer.play();
+                          setState(() {
+                            soundClick = '1';
+                          });
+                        },
+                        iconSize: size.width < 700 ? size.height * 0.11 : size.height * 0.09,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ),
+                      IconButton(
+                        icon: GradientIcon(
+                          icon: FontAwesomeIcons.stopCircle,
+                          size: size.width < 700 ? size.height * 0.1 : size.height * 0.085,
+                          gradient: new LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              Colors.lightBlueAccent
+                            ],
+                          ),
+                        ),
+                        onPressed: () {
+                          assetsAudioPlayer.stop();
+                          setState(() {
+                            soundClick = '0';
+                          });
+                        },
+                        iconSize: size.width < 700 ? size.height * 0.11 : size.height * 0.09,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                right: size.width * 0.02,
+                bottom: size.width < 700 ? size.height * 0.435 : size.height * 0.455,
+                child: Opacity(
+                  opacity: 0.3,
+                  child: CircularButton(
+                    color: Colors.blue,
+                    width: size.width < 700 ? size.height * 0.12 : size.height * 0.09,
+                    height: size.width < 700 ? size.height * 0.12 : size.height * 0.09,
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: size.height * 0.05,
+                    ),
+                    onClick: (_bookIndex == _unitSort-1)? _isLastUnit
+                        :() async{
+                      try {
+                        List<Question> questions = await getVocaQuestions(
+                            units[_bookIndex + 1], 'text', '101', _memberSeq);
+                        CurrentLearn currentLearn = await getCurrentLearn(
+                            _memberSeq, units[_bookIndex + 1].unitSeq, _bookSeq,
+                            (_bookIndex + 1).toString(), _categoryName,
+                            _bookName);
+                        Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (_) =>
+                                VocaListPage(questions: questions,
+                                    unit: units[_bookIndex + 1])
+                        ));
+                      }  catch(e){
+                        _key.currentState.showSnackBar(SnackBar(
+                          content: Text("다음 단어가 없습니다."), duration: Duration(milliseconds: 500),
+                        ));
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                right: size.height * 0.05,
+                bottom: size.width * 0.03,
+                child: Stack(
+                  //시작점을 잡아준다 -> ignorePointer 의 기준점 설정 가능
+                  alignment: Alignment.bottomRight,
+                  children: <Widget>[
+                    //translate 될 때 변화를 무시해줄 수 있는 포인터 AbsorbPointer 도 있음
+                    IgnorePointer(
+                      child: Container(
+                        //padding: const EdgeInsets.only(left: 100.0),
+                        color: Colors.black.withOpacity(0.0),
+                        height: size.width * 0.24,
+                        width: size.height * 0.38,
+                      ),
+                    ),
+                    Transform.translate(
+                      offset:
+                      Offset.fromDirection(
+                          getRadiansFromDegree(180), size.width < 700 ? degOneTranslationAnimation.value * size.height * 0.23 : degOneTranslationAnimation.value * size.height * 0.2),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
+                          ..scale(degOneTranslationAnimation.value),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          height: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.height * 0.12),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: size.width < 700 ? size.height * 0.10 : size.height * 0.08,
+                                    height: size.width < 700 ? size.height * 0.1 : size.height * 0.08,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(size.width * 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: size.height * 0.02,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.5,
+                                        child: GradientText("한",
+                                            gradient: LinearGradient(
+                                                colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                                            style: TextStyle(fontSize: size.width < 700 ? size.height * 0.055 : size.height * 0.045, fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.center
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: size.height * 0.03,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: size.height * 0.03,
+                                      ),
+                                      GradientIcon(
+                                        icon: FontAwesomeIcons.font,
+                                        size: size.width < 700 ? size.height * 0.07 : size.height * 0.05,
+                                        gradient: new LinearGradient(
+                                          colors: [
+                                            Colors.blueAccent,
+                                            Colors.lightBlueAccent
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              MaterialButton(
+                                height: size.width < 700 ? size.height * 0.14 : size.height * 0.12,
+                                elevation: 1.0,
+                                highlightElevation: 1.0,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () async{
+                                  List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'eng', textVoca: 'voca')
+                                  ));
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(size.width * 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset:
+                      Offset.fromDirection(
+                          getRadiansFromDegree(210), size.width < 700 ? degOneTranslationAnimation.value * size.height * 0.23 : degOneTranslationAnimation.value * size.height * 0.2),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
+                          ..scale(degOneTranslationAnimation.value),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          height: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.height * 0.12),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: size.width < 700 ? size.height * 0.1 : size.height * 0.08,
+                                    height: size.width < 700 ? size.height * 0.1 : size.height * 0.08,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(size.width * 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: size.height * 0.015,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Opacity(
+                                        opacity: 0.5,
+                                        child: GradientIcon(
+                                          icon: FontAwesomeIcons.font,
+                                          size: size.width < 700 ? size.height * 0.055 : size.height * 0.045,
+                                          gradient: new LinearGradient(
+                                            colors: [
+                                              Colors.blueAccent,
+                                              Colors.lightBlueAccent
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: size.height * 0.035,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: size.height * 0.015,
+                                      ),
+                                      GradientText("한",
+                                          gradient: LinearGradient(
+                                              colors: [Colors.blueAccent, Colors.lightBlueAccent]),
+                                          style: TextStyle(fontSize: size.width < 700 ? size.height * 0.068 : size.height * 0.051, fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              MaterialButton(
+                                height: size.width < 700 ? size.height * 0.14 : size.height * 0.12,
+                                elevation: 1.0,
+                                highlightElevation: 1.0,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () async{
+                                  List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'kor', textVoca: 'voca')
+                                  ));
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(size.width * 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset:
+                      Offset.fromDirection(
+                          getRadiansFromDegree(240), size.width < 700 ? degOneTranslationAnimation.value * size.height * 0.23 : degOneTranslationAnimation.value * size.height * 0.2),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
+                          ..scale(degOneTranslationAnimation.value),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          height: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.height * 0.12),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: size.width < 700 ? size.height * 0.1 : size.height * 0.08,
+                                    height: size.width < 700 ? size.height * 0.1 : size.height * 0.08,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(size.width * 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              GradientIcon(
+                                icon: FontAwesomeIcons.headphones,
+                                size: size.width < 700 ? size.height * 0.08 : size.height * 0.06,
+                                gradient: new LinearGradient(
+                                  colors: [
+                                    Colors.blueAccent,
+                                    Colors.lightBlueAccent
+                                  ],
+                                ),
+                              ),
+                              MaterialButton(
+                                height: size.width < 700 ? size.height * 0.14 : size.height * 0.12,
+                                elevation: 1.0,
+                                highlightElevation: 1.0,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () async{
+                                  List<Question> questions =  await getVocaQuestions(widget.unit, learns[0].type, learns[0].code, _memberSeq);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => Study1Page(questions: questions, unit: widget.unit, type: 'sound', textVoca: 'voca')
+                                  ));
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(size.width * 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Transform.translate(
+                      offset:
+                      Offset.fromDirection(
+                          getRadiansFromDegree(270), size.width < 700 ? degOneTranslationAnimation.value * size.height * 0.23 : degOneTranslationAnimation.value * size.height * 0.2),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value))
+                          ..scale(degOneTranslationAnimation.value),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          height: size.width < 700 ? size.height * 0.12 : size.height * 0.10,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.height * 0.12),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: size.width < 700 ? size.height * 0.10 : size.height * 0.08,
+                                    height: size.width < 700 ? size.height * 0.10 : size.height * 0.08,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(size.width * 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              GradientIcon(
+                                icon: FontAwesomeIcons.question,
+                                size: size.width < 700 ? size.height * 0.08 : size.height * 0.06,
+                                gradient: new LinearGradient(
+                                  colors: [
+                                    Colors.blueAccent,
+                                    Colors.lightBlueAccent
+                                  ],
+                                ),
+                              ),
+                              MaterialButton(
+                                height: size.width < 700 ? size.height * 0.14 : size.height * 0.12,
+                                elevation: 1.0,
+                                highlightElevation: 1.0,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () async{
+                                  List<Question> questions =  await getVocaQuestions(widget.unit, learns[1].type, learns[1].code, _memberSeq);
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (_) => Study2Page(questions: questions, unit: widget.unit)
+                                  ));
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(size.width * 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      opacity: (_isClicked == false)? 0.5 : 1.0,
+                      duration: Duration(milliseconds: 300),
+                      child: Transform(
+                        transform: Matrix4.rotationZ(getRadiansFromDegree(rotationAnimation.value)),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: size.width < 700 ? size.height * 0.16 : size.height * 0.13,
+                          height: size.width < 700 ? size.height * 0.16 : size.height * 0.13,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.width * 0.1),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    width: size.width < 700 ? size.height * 0.05 : size.height * 0.04,
+                                    height: size.width < 700 ? size.height * 0.05 : size.height * 0.04,
+                                    decoration: new BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(size.width * 0.8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              MaterialButton(
+                                height: size.width < 700 ? size.height * 0.14 : size.height * 0.12,
+                                elevation: 1.0,
+                                highlightElevation: 1.0,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onPressed: () {
+                                  if(animationController.isCompleted){
+                                    animationController.reverse();
+                                  } else {
+                                    animationController.forward();
+                                  }
+                                  (_isClicked == false)?_isClicked = true : _isClicked = false;
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(size.width * 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -808,7 +1484,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
     Question question = widget.questions[index];
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.only(top: size.height * 0.015, bottom: size.height * 0.015, left: size.width * 0.09, right: size.width * 0.03),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -819,13 +1495,12 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 18.0
+                  fontSize: size.height * 0.02
               ),
                 minFontSize: 8.0,
                 maxLines: 1,
               ),
             ),
-            SizedBox(width: size.width * 0.04),
             SizedBox(
               width: size.width * 0.34,
               child: AutoSizeText(HtmlUnescape().convert(question.question),
@@ -833,7 +1508,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                 style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
-                    fontSize: 15.0
+                    fontSize: size.height * 0.02
                 ),
                 minFontSize: 8.0,
                 maxLines: 1,
@@ -854,7 +1529,7 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
                 duration: Duration(milliseconds: 500),
                 child: new GradientIcon(
                   icon: (question.isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
-                  size: size.width * 0.06,
+                  size: size.width * 0.05,
                   gradient: new LinearGradient(
                     colors: [
                       Colors.yellow,
@@ -887,6 +1562,99 @@ class _VocaListPageState extends State<VocaListPage> with TickerProviderStateMix
       ),
     );
   }
+
+  Widget _buildItemL(BuildContext context, int index) {
+
+    Size size = MediaQuery.of(context).size;
+
+    if(index == widget.questions.length) {
+      return SizedBox(
+        height: size.height * 0.1,
+      );
+    }
+    Question question = widget.questions[index];
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.only(top: size.height * 0.02, bottom: size.height * 0.02, left: size.width * 0.09, right: size.width * 0.03),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: size.width * 0.34,
+              child: AutoSizeText(HtmlUnescape().convert(question.correctAnswer),
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: size.width * 0.02
+                ),
+                minFontSize: 8.0,
+                maxLines: 1,
+              ),
+            ),
+            SizedBox(width: size.width * 0.06),
+            SizedBox(
+              width: size.width * 0.34,
+              child: AutoSizeText(HtmlUnescape().convert(question.question),
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: size.width * 0.02
+                ),
+                minFontSize: 8.0,
+                maxLines: 1,
+              ),
+            ),
+            SizedBox(width: size.width * 0.03),
+            new GestureDetector(
+              onTap: () async{
+                setState(() {
+                  question.isSaved =
+                  !question.isSaved;
+                });
+                (question.isSaved == true)? _isSaved = await getSavedWord(_memberSeq, widget.unit.unitSeq, question.vocaSeq, question.correctAnswer, question.question):
+                _isSaved = await getDeleteWord(_memberSeq, question.vocaSeq);
+              },
+              child: new AnimatedOpacity(
+                opacity: (question.isSaved == false)?0.6:1.0,
+                duration: Duration(milliseconds: 500),
+                child: new GradientIcon(
+                  icon: (question.isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
+                  size: size.height * 0.05,
+                  gradient: new LinearGradient(
+                    colors: [
+                      Colors.yellow,
+                      Colors.orange
+                    ],
+                  ),
+                ),
+                curve: Curves.fastOutSlowIn,
+              ),
+              /*IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: GradientIcon(
+                icon: (_isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
+                size: size.width * 0.06,
+                gradient: new LinearGradient(
+                  colors: [
+                    Colors.yellow,
+                    Colors.orange
+                  ],
+                ),
+              ),
+              onPressed: (){
+                (_isSaved == false)?_isSaved = true : _isSaved = false;
+              },
+            )*/
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _isFirstUnit() {
     _key.currentState.showSnackBar(SnackBar(
       content: Text("첫 번째 단어장입니다."),

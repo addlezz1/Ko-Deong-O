@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Lion',
+      title: 'P-each',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         accentColor: Colors.pink,

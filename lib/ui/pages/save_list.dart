@@ -38,14 +38,16 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
     //Return String
     String memberSeq = prefs.getString('memberSeq');
     List<SaveList> saveList =  await getSaveList(memberSeq);
-    if(saveLists[0]?.vocaKor != null) {
-      saveLists = saveList;
+    if(saveList[0].vocaKor != null) {
+
+      if(this.mounted) {
+        setState(() {
+          saveLists = saveList;
+        });
+      }
     }
     _memberSeq = memberSeq;
-    if(this.mounted) {
-      setState(() {
-      });
-    }
+
   }
 
   @override
@@ -60,8 +62,19 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    var orientation = MediaQuery.of(context).orientation;
 
+    return Scaffold(
+      body: Form(
+        child: (orientation == Orientation.portrait)
+            ? portraitMode(context)
+            : landscapeMode(context),
+      ),
+    );
+  }
+
+  Widget portraitMode(context){
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -96,12 +109,47 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
     );
   }
 
+  Widget landscapeMode(context){
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('저장한 단어'),
+        elevation: 0,
+      ),
+      body: Container(
+        width: size.width,
+        height: size.height,
+        decoration: new BoxDecoration(
+          gradient: new LinearGradient(
+              colors: [
+                Colors.white70,
+                Colors.lightBlueAccent
+              ],
+              begin: const FractionalOffset(0.5, 0.5),
+              end: const FractionalOffset(0.5, 1.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp
+          ),
+        ),
+        child: Stack(
+          children: <Widget>[
+            ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: saveLists.length,
+              itemBuilder: _buildItemL,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildItem(BuildContext context, int index) {
 
     Size size = MediaQuery.of(context).size;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.only(top: size.height * 0.015, bottom: size.height * 0.015, left: size.width * 0.05, right: size.width * 0.02),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -110,11 +158,11 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
               child: (saveLists[index] != null)? AutoSizeText(HtmlUnescape().convert(saveLists[index]?.vocaEng),
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-              ),
-              minFontSize: 8.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: size.height * 0.02
+                ),
+                minFontSize: 8.0,
               ) : Text(""),
             ),
             SizedBox(width: size.width * 0.04),
@@ -125,7 +173,7 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
                 style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
-                    fontSize: 18.0
+                    fontSize: size.height * 0.02
                 ),
                 minFontSize: 8.0,
                 maxLines: 1,
@@ -139,14 +187,14 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
                   !saveLists[index].isSaved;
                 });
                 (saveLists[index].isSaved == true)? _isSaved = await getSavedWord(_memberSeq, saveLists[index].unitSeq, saveLists[index].vocaSeq, saveLists[index].vocaEng, saveLists[index].vocaKor):
-                    _isSaved = await getDeleteWord(_memberSeq, saveLists[index].vocaSeq);
+                _isSaved = await getDeleteWord(_memberSeq, saveLists[index].vocaSeq);
               },
               child: new AnimatedOpacity(
                 opacity: (saveLists[index].isSaved == false)?0.6:1.0,
                 duration: Duration(milliseconds: 500),
                 child: new GradientIcon(
                   icon: (saveLists[index].isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
-                  size: size.width * 0.06,
+                  size: size.width * 0.05,
                   gradient: new LinearGradient(
                     colors: [
                       Colors.yellow,
@@ -156,7 +204,7 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
                 ),
                 curve: Curves.fastOutSlowIn,
               ),
-            /*IconButton(
+              /*IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               icon: GradientIcon(
@@ -179,4 +227,89 @@ class _SaveListPageState extends State<SaveListPage> with TickerProviderStateMix
       ),
     );
   }
+
+  Widget _buildItemL(BuildContext context, int index) {
+
+    Size size = MediaQuery.of(context).size;
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.only(top: size.height * 0.02, bottom: size.height * 0.02, left: size.width * 0.07, right: size.width * 0.03),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: size.width * 0.34,
+              child: (saveLists[index] != null)? AutoSizeText(HtmlUnescape().convert(saveLists[index]?.vocaEng),
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: size.width * 0.02
+                ),
+                minFontSize: 8.0,
+              ) : Text(""),
+            ),
+            SizedBox(width: size.width * 0.06),
+            SizedBox(
+              width: size.width * 0.34,
+              child: (saveLists[index] != null)? AutoSizeText(HtmlUnescape().convert(saveLists[index]?.vocaKor),
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: size.width * 0.02
+                ),
+                minFontSize: 8.0,
+                maxLines: 1,
+              ) : Text(""),
+            ),
+            SizedBox(width: size.width * 0.03),
+            (saveLists[index] != null)? new GestureDetector(
+              onTap: () async{
+                setState(() {
+                  saveLists[index].isSaved =
+                  !saveLists[index].isSaved;
+                });
+                (saveLists[index].isSaved == true)? _isSaved = await getSavedWord(_memberSeq, saveLists[index].unitSeq, saveLists[index].vocaSeq, saveLists[index].vocaEng, saveLists[index].vocaKor):
+                _isSaved = await getDeleteWord(_memberSeq, saveLists[index].vocaSeq);
+              },
+              child: new AnimatedOpacity(
+                opacity: (saveLists[index].isSaved == false)?0.6:1.0,
+                duration: Duration(milliseconds: 500),
+                child: new GradientIcon(
+                  icon: (saveLists[index].isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
+                  size: size.height * 0.05,
+                  gradient: new LinearGradient(
+                    colors: [
+                      Colors.yellow,
+                      Colors.orange
+                    ],
+                  ),
+                ),
+                curve: Curves.fastOutSlowIn,
+              ),
+              /*IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: GradientIcon(
+                icon: (_isSaved == false)?FontAwesomeIcons.star : FontAwesomeIcons.solidStar,
+                size: size.width * 0.06,
+                gradient: new LinearGradient(
+                  colors: [
+                    Colors.yellow,
+                    Colors.orange
+                  ],
+                ),
+              ),
+              onPressed: (){
+                (_isSaved == false)?_isSaved = true : _isSaved = false;
+              },
+            )*/
+            ) : Text(''),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

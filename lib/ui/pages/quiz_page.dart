@@ -64,10 +64,20 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    var orientation = MediaQuery.of(context).orientation;
+
+    return Scaffold(
+      body: Form(
+        child: (orientation == Orientation.portrait)
+            ? portraitMode(context)
+            : landscapeMode(context),
+      ),
+    );
+  }
+
+  Widget portraitMode(context){
     Size size = MediaQuery.of(context).size;
     Question question = widget.questions[_currentIndex];
     print(question.mediaUrl);
@@ -94,21 +104,22 @@ class _QuizPageState extends State<QuizPage> {
         body: Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(size.height * 0.01),
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       CircleAvatar(
+                        radius: size.height * 0.02,
                         backgroundColor: Colors.white70,
-                        child: Text("${_currentIndex+1}"),
+                        child: Text("${_currentIndex+1}",style: TextStyle(fontSize: size.height * 0.015),),
                       ),
-                      SizedBox(width: 8.0),
+                      SizedBox(width: size.height * 0.02),
                       Expanded(
-                        child: Text(HtmlUnescape().convert(widget.questions[_currentIndex].question),
+                        child: Text(HtmlUnescape().convert(widget.questions[_currentIndex].question,),
                           softWrap: true,
 
-                          style: _questionStyle,),
+                          style: TextStyle(fontSize: size.height * 0.018),),
                       ),
                     ],
                   ),
@@ -138,7 +149,7 @@ class _QuizPageState extends State<QuizPage> {
                   (widget.type == 'reading')?Card(
                     elevation: 3,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 25.0, right: 25.0, top: 15.0, bottom: 18.0),
+                      padding: EdgeInsets.all(size.height * 0.02),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -152,7 +163,7 @@ class _QuizPageState extends State<QuizPage> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.normal,
-                                  fontSize: 16.0,
+                                  fontSize: size.height * 0.02,
                                   height: 2,
                                 ),
                               ),
@@ -174,8 +185,11 @@ class _QuizPageState extends State<QuizPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
+                            SizedBox(
+                              height: size.height * 0.03,
+                            ),
                             ...options.map((option)=>RadioListTile(
-                              title: Text(HtmlUnescape().convert("$option"), style: TextStyle(fontSize: 14.0),),
+                              title: Text(HtmlUnescape().convert("$option"), style: TextStyle(fontSize: size.height * 0.02),),
                               groupValue: _answers[_currentIndex],
                               activeColor: Colors.blueAccent,
                               value: option,
@@ -184,6 +198,7 @@ class _QuizPageState extends State<QuizPage> {
                                   _answers[_currentIndex] = option;
                                 });
                               },
+                              dense: false,
                             )),
                           ],
                         ),
@@ -258,10 +273,210 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 
+  Widget landscapeMode(context){
+    Size size = MediaQuery.of(context).size;
+    Question question = widget.questions[_currentIndex];
+    print(question.mediaUrl);
+    final List<dynamic> options = question.incorrectAnswers;
+    for(int i = 4; i>=0; i--) {
+      if(question?.incorrectAnswers[i] == null) {
+        options.remove(options[i]);
+      }
+    }
+    if(!options.contains(question.correctAnswer)) {
+      options.add(question.correctAnswer);
+      options.shuffle();
+    }
+    advancedPlayer.play(question.audioUrl);
+
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        key: _key,
+        appBar: AppBar(
+          title: Text(widget.unit.unitName),
+          elevation: 0,
+        ),
+        body: Stack(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(size.width * 0.01),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: size.width * 0.02,
+                        backgroundColor: Colors.white70,
+                        child: Text("${_currentIndex+1}",style: TextStyle(fontSize: size.height * 0.015),),
+                      ),
+                      SizedBox(width: size.width * 0.02),
+                      Expanded(
+                        child: Text(HtmlUnescape().convert(widget.questions[_currentIndex].question,),
+                          softWrap: true,
+
+                          style: TextStyle(fontSize: size.width * 0.018),),
+                      ),
+                    ],
+                  ),
+                  /*question.mediaUrl ==''?Text("")
+                    : Container(
+                      alignment: Alignment(1, 1),
+                      //width: MediaQuery.of(context).size.width,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          //fit: BoxFit.fill,
+                          image: NetworkImage(
+                              question.mediaUrl),
+                        ),
+                      ),
+                    ),*/
+                  Row(
+                    children: <Widget>[
+                      (question?.mediaUrl != 'http://talkwho.whitesoft.net/' && widget.type == 'listening')
+                          ? Center(
+                          child: GestureDetector(
+                            onTap: () => setState(() => _isImageShown = !_isImageShown),
+                            child: new Image.network(question.mediaUrl,width: size.width * 0.45, height: size.height * 0.5, fit: BoxFit.fill,
+                            ),
+                          )
+                      )
+                          :SizedBox(height: size.width * 0.0),
+                      (widget.type == 'reading')? Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: EdgeInsets.all(size.width * 0.02),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                width: size.width * 0.45,
+                                height: size.height * 0.5,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Text(HtmlUnescape().convert(widget.sentence),
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: size.width * 0.02,
+                                      height: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ):
+                      SizedBox(width: size.width * 0.0),
+                      Card(
+                        elevation: 2,
+                        child: SizedBox(
+                          width: (widget.type == 'reading')?size.width * 0.45:
+                          (question?.mediaUrl == 'http://talkwho.whitesoft.net/' )?size.width * 0.45:
+                          size.width * 0.45,
+                          height: size.height * 0.57,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: size.height * 0.03,
+                                ),
+                                ...options.map((option)=>RadioListTile(
+                                  title: Text(HtmlUnescape().convert("$option"), style: TextStyle(fontSize: size.width * 0.02),),
+                                  groupValue: _answers[_currentIndex],
+                                  activeColor: Colors.blueAccent,
+                                  value: option,
+                                  onChanged: (value){
+                                    setState(() {
+                                      _answers[_currentIndex] = option;
+                                    });
+                                  },
+                                  dense: false,
+                                )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: size.height * 0.02,
+                  ),
+                  Row(
+                    children : <Widget>[
+                      (question?.mediaUrl != 'http://talkwho.whitesoft.net/' && widget.type == 'reading')? CircularButton(
+                        color: Colors.blue,
+                        width: size.height * 0.12,
+                        height: size.height * 0.12,
+                        icon: Icon(
+                          FontAwesomeIcons.image,
+                          color: Colors.white,
+                        ),
+                        onClick: (){
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                                elevation: 16,
+                                child: Container(
+                                  height: size.width * 0.6,
+                                  width: size.height * 0.95,
+                                  child: Image.network(question.mediaUrl
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ) :
+                      SizedBox(
+                        width: size.width * 0.12,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.22,
+                      ),
+                      SizedBox(
+                        child: Container(
+                          width: size.width * 0.3,
+                          height: size.height * 0.09,
+                          decoration: new BoxDecoration(
+                            gradient: new LinearGradient(
+                              colors: [
+                                Colors.blueAccent,
+                                Colors.lightBlueAccent
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size.height * 0.14),
+                          ),
+                          child: MaterialButton(
+                            child: Text( _currentIndex == (widget.questions.length - 1) ? "Submit" : "Next",style: TextStyle(fontSize: size.height * 0.042, fontWeight: FontWeight.bold),),
+                            onPressed: _nextSubmit,
+                            textColor: Colors.white70,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _nextSubmit() {
     if(_answers[_currentIndex] == null) {
       _key.currentState.showSnackBar(SnackBar(
-        content: Text("You must select an answer to continue."),
+        content: Text("보기를 선택해주세요."),
       ));
       return;
     }

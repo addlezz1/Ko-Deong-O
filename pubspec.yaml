@@ -1,7 +1,7 @@
 name: talkwho
 description: A new Flutter project.
 
-version: 1.0.0+1
+version: 1.17.5
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
@@ -42,6 +42,14 @@ flutter:
   assets:
     - assets/images/no_profile.png
     - assets/click1.mp3
+    - assets/images/H1.png
+    - assets/images/H2.png
+    - assets/images/H3.png
+    - assets/images/M1.png
+    - assets/images/M2.png
+    - assets/images/M3.png
+    - assets/images/fish_image.png
+    - assets/images/current_fish.png
   fonts:
     - family: Montserrat
       fonts:
