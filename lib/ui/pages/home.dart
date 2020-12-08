@@ -62,6 +62,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
+    try{
+      InternetAddress.lookup('google.com').then((result) {
+        if(result.isNotEmpty && result[0].rawAddress.isNotEmpty){
+          print('connected');
+        } else {
+          _showDialog();
+        }
+      }).catchError((error){
+        _showDialog();
+      });
+    } on SocketException catch (_){
+      print('not connected');
+      _showDialog();
+    }
+
     if (triedSilentLogin == false) {
       // silentLogin(context);
     }
@@ -160,6 +175,17 @@ class _HomePageState extends State<HomePage> {
     _loadProfile();
     pageController = PageController();
     super.initState();
+  }
+
+  void _showDialog(){
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("인터넷에 연결해주세요"),
+        content: Text(''),
+        actions: <Widget>[FlatButton(onPressed: () => Navigator.of(context).pop(false), child: Text('확인')),FlatButton(onPressed: () => exit(0), child: Text('종료하기'))],
+      )
+    );
   }
 
   /*@override
